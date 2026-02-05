@@ -1,0 +1,55 @@
+<div class="container d-flex align-items-center justify-content-center vh-100">
+  <div class="card w-100" style="max-width: 400px;">
+    <div class="card-body text-center p-4">
+      <!-- Logo -->
+      <img src="assets/emerson3.png" alt="Emerson logo" class="img-fluid mb-3" style="max-width: 150px;">
+
+      <!-- Title -->
+      <h1 class="fs-2 fw-bold mb-4 text-primary">INFRA ASSET MANAGEMENT SYSTEM</h1>
+
+      <!-- Login Form -->
+      <form [formGroup]="form" (ngSubmit)="login()">
+        <!-- Username Input -->
+        <div class="input-group mb-3">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-person-fill fs-3 text-primary"></i>
+          </span>
+          <input
+            id="username"
+            type="text"
+            class="form-control border-start-0 ps-0"
+            formControlName="username"
+            placeholder="Username"
+            [ngbTypeahead]="search"
+            aria-label="Username"
+          />
+        </div>
+        <!-- Password Input -->
+        <div class="input-group mb-3">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-lock-fill fs-3 text-primary"></i>
+          </span>
+          <input
+            id="password"
+            type="password"
+            class="form-control border-start-0 ps-0"
+            formControlName="password"
+            placeholder="Password"
+            aria-label="Password"
+          />
+        </div>
+
+        <!-- Login Button -->
+        <div class="d-grid">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg mt-3"
+            [disabled]="!form.valid"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

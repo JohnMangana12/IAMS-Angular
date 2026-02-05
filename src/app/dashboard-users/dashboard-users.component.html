@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="header">
+      <app-header></app-header>
+  </div>
+  <!-- Add this line to display the loading modules -->
+  <app-loading-modules *ngIf="isLoadingModules"></app-loading-modules>
+  <div class="main-container">
+      <div class="side-nav">
+          <app-side-nav-users></app-side-nav-users>
+      </div>
+      <div class="main">
+          <app-main></app-main>
+
+      </div>
+
+
+  </div>
+
+  </div>
+
+

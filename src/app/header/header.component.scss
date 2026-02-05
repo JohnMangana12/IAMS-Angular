@@ -1,0 +1,185 @@
+.header {
+  height: 80px;
+  padding: 20px 50px;
+  background-color: rgb(255, 255, 255);
+  color: #000000;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  align-items: center;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .logo-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+  }
+
+  /* Global Search Bar Styles */
+  .search-container {
+    position: relative;
+    width: 40%;
+    margin: 0 20px;
+  }
+
+  /* Bootstrap Input Group Styling */
+  .search-wrapper {
+    display: flex; /* Already handled by Bootstrap's input-group */
+    align-items: center;
+    /* Removed manual border/padding as .input-group handles it */
+    background-color: #f8f9fa; /* Light background for the search input area */
+    border-radius: 0.25rem; /* Bootstrap's default border-radius */
+    transition: box-shadow 0.3s ease-in-out; /* For focus animation */
+  }
+
+  /* Apply Bootstrap's focus styling using a class */
+  .search-wrapper.focused {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25); /* Bootstrap primary focus shadow */
+    border-color: #0d6efd; /* Bootstrap primary border color */
+  }
+
+  /* Bootstrap form-control for the input */
+  .search-input {
+    flex-grow: 1;
+    border: none; /* Bootstrap input-group handles borders */
+    outline: none; /* Remove default outline */
+    padding: 0.375rem 0.75rem; /* Bootstrap default input padding */
+    font-size: 1.5rem; /* Bootstrap default font size */
+    background-color: transparent; /* Inherit background from wrapper */
+    box-shadow: none; /* Remove any potential conflicting shadows */
+  }
+
+  /* Style for the placeholder text */
+  .search-input::placeholder { /* Or use :-ms-input-placeholder and ::-moz-placeholder for older browsers */
+    font-weight: bold;
+    color: #6c757d; /* Optional: You might want to adjust the color as well */
+  }
+
+  /* Style for the magnifying glass/spinner icon */
+  .search-icon {
+    padding: 0.375rem 0.75rem; /* Match input padding */
+    background-color: transparent; /* No background for the span */
+    border: none; /* Remove border */
+    color: #6c757d; /* Muted color for icon */
+    cursor: pointer;
+    min-width: 2.5rem; /* Ensure space for icon/spinner */
+    display: flex; /* Use flex to center the icon/spinner */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-icon i { /* Added a rule to ensure the icon itself has a good display */
+    font-size: 1.5rem; /* Slightly larger icon */
+    line-height: 1; /* Ensure proper vertical alignment */
+  }
+
+  .search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem; /* Bootstrap border-radius */
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    /* Add a subtle animation for appearing/disappearing */
+    animation: fadeInDown 0.2s ease-out forwards;
+  }
+
+  /* Keyframes for fade-in down animation */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .search-result-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease; /* Smooth transition for hover */
+  }
+
+  .search-result-item strong { /* Styling for the bold AssetTag */
+    font-weight: bold; /* Ensure it's bold */
+    color: #333; /* Slightly darker for prominence if needed */
+  }
+
+  .search-result-item:last-child {
+    border-bottom: none;
+  }
+
+  .search-result-item:hover {
+    background-color: #e9ecef; /* Bootstrap hover color */
+  }
+
+  .no-results,
+  .search-error-message {
+    padding: 10px 15px;
+    font-style: italic;
+  }
+
+  .search-error-message {
+    color: #dc3545; /* Bootstrap danger color */
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  .no-results {
+    color: #6c757d; /* Bootstrap secondary text color */
+  }
+
+  /* User Section Styles */
+  .user {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background-color: rgb(1, 135, 245);
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 20px;
+  }
+
+  /* Logout Button Styles */
+  .logout-btn {
+    background-color: #575666; /* Bootstrap danger color */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 20px;
+    transition: background-color 0.3s ease;
+  }
+
+  .logout-btn:hover {
+    background-color: #c82333;
+  }
+}

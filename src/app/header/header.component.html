@@ -1,0 +1,67 @@
+<!-- header.component.html -->
+<div class="header">
+  <div class="logo">
+    <img class="logo-image" src="assets/emerson5.png" alt="emerson" />
+    <span>Infra Asset Management</span>
+  </div>
+
+  <!-- Global Search Bar -->
+  <div class="search-container">
+    <!-- Bootstrap Input Group -->
+    <div class="input-group search-wrapper" [class.focused]="isInputFocused">
+      <input
+        type="text"
+        class="form-control search-input"
+        placeholder="Search by Asset Tag, Description, or Serial Number..."
+        [value]="searchTerm"
+        (input)="onSearchInput($event)"
+        (blur)="onSearchInputBlur($event)"
+        (focus)="onSearchInputFocus()"
+        aria-label="Search for assets by tag, description, or serial number"
+        [attr.aria-expanded]="searchResults.length > 0 && searchTerm.trim() ? 'true' : 'false'"
+        aria-haspopup="listbox"
+      />
+      <span class="input-group-text search-icon">
+        <!-- Show spinner when loading, otherwise show search icon -->
+        <ng-container *ngIf="isLoading">
+          <i class="fas fa-spinner fa-spin"></i> <!-- Font Awesome spinner -->
+        </ng-container>
+        <ng-container *ngIf="!isLoading">
+          <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+        </ng-container>
+      </span>
+    </div>
+
+    <!-- Display search results dropdown -->
+    <div
+      class="search-results-dropdown"
+      *ngIf="(searchResults.length > 0 || searchError) && searchTerm.trim()"
+      role="listbox"
+    >
+      <div *ngIf="searchError" class="search-error-message">{{ searchError }}</div>
+
+      <div
+        *ngFor="let result of searchResults"
+        class="search-result-item"
+        (click)="openAssetDetails(result)"
+        (mousedown)="onResultMouseDown()"
+        role="option"
+        [attr.aria-selected]="false"
+      >
+        <!-- Modified line to make AssetTag bold -->
+        <strong>{{ result.AssetTag }}</strong> ({{ result.Description }}) - {{ result.SerialNumber }}
+      </div>
+
+      <div *ngIf="searchResults.length === 0 && !searchError && searchTerm.trim()" class="no-results">
+        No assets found matching "{{ searchTerm }}".
+      </div>
+    </div>
+  </div>
+  <!-- End Global Search Bar -->
+
+  <div class="user">
+    <div class="user-name">{{ authService.currentUsername || 'Guest' }}</div>
+    <div class="user-image">{{ (authService.currentUsername ? authService.currentUsername[0] : 'G') | uppercase }}</div>
+    <button (click)="logout()" class="logout-btn">Logout</button>
+  </div>
+</div>

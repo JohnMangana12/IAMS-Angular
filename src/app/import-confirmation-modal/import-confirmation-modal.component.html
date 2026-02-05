@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Import Summary</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body">
+  <p>Excel import process completed.</p>
+  <p class="summary-success">Successfully imported: <strong>{{ successCount }}</strong> assets.</p>
+  <p class="summary-failed">Failed to import: <strong>{{ failedCount }}</strong> assets.</p>
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    <strong>Error:</strong> {{ errorMessage }}
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>

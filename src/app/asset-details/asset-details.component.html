@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Asset Details</h4>
+  <!-- Add a close button for the modal header as well -->
+
+</div>
+<div class="modal-body">
+  <!-- Use *ngIf to safely display asset properties only if 'asset' is defined -->
+  <div *ngIf="asset; else noAssetFound">
+    <p><strong>Asset Tag:</strong> {{ asset.AssetTag }}</p>
+    <p><strong>Description:</strong> {{ asset.Description }}</p>
+    <p><strong>Serial Number:</strong> {{ asset.SerialNumber }}</p>
+    <p><strong>Location:</strong> {{ asset.Location }}</p>
+    <p><strong>Asset Condition:</strong> {{ asset.AssetCondition }}</p>
+    <p><strong>Specification:</strong> {{ asset.Specification }}</p>
+    <p><strong>Group Asset Category:</strong> {{ asset.GroupAssetCategory }}</p>
+    <p><strong>PO Number Reference:</strong> {{ asset.PoNumber }}</p>
+    <!-- Using date pipe for better display of dates -->
+    <p><strong>Warranty Expires:</strong> {{ asset.Warranty | date:'mediumDate' }}</p>
+    <p><strong>Date Acquired:</strong> {{ asset.DateAcquired | date:'mediumDate' }}</p>
+    <p><strong>Checkout To:</strong> {{ asset.CheckoutTo }}</p>
+    <p><strong>Asset Category:</strong> {{ asset.AssetCategory }}</p>
+    <p><strong>Cost Center:</strong> {{ asset.CostCenter }}</p>
+    <p><strong>Scrum Team:</strong> {{ asset.ScrumTeam }}</p>
+    <p><strong>Release Train:</strong> {{ asset.AgileReleaseTrain }}</p>
+    <!-- Add any other relevant fields from your Asset interface -->
+  </div>
+  <!-- This ng-template is displayed if 'asset' is null or undefined -->
+  <ng-template #noAssetFound>
+    <p>Asset details could not be loaded.</p>
+  </ng-template>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+  <!-- You could add "Edit" or "Delete" buttons here, which would typically involve emitting an event -->
+</div>

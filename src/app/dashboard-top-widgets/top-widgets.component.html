@@ -1,0 +1,46 @@
+<!-- top-widgets.component.html -->
+
+<!-- You can optionally show a loading message -->
+<div *ngIf="isLoading" class="loading-message">
+  Loading Dashboard Data...
+</div>
+
+<!-- Show the widgets only when data is loaded -->
+<div class="widget-container" *ngIf="!isLoading">
+    <div class="widget green">
+      <div class="icon">
+        <fa-icon [icon]="faServer"></fa-icon>
+      </div>
+      <div class="value">
+        <div class="top">{{ dashboardStats.servers | number }}</div>
+        <div class="bottom">Servers</div>
+      </div>
+    </div>
+    <div class="widget yellow">
+      <div class="icon">
+        <fa-icon [icon]="faComputer"></fa-icon>
+      </div>
+      <div class="value">
+        <div class="top">{{ dashboardStats.desktops| number }}</div>
+        <div class="bottom">Desktops and Workstations</div>
+      </div>
+    </div>
+    <div class="widget red">
+      <div class="icon">
+        <fa-icon [icon]="faBoxesStacked"></fa-icon>
+      </div>
+      <div class="value">
+        <div class="top">{{ dashboardStats.deltaV | number }}</div>
+        <div class="bottom">DeltaV Assets</div>
+      </div>
+    </div>
+    <div class="widget blue">
+      <div class="icon">
+        <fa-icon [icon]="faLaptop"></fa-icon>
+      </div>
+      <div class="value">
+        <div class="top">{{ dashboardStats.laptops | number }}</div>
+        <div class="bottom">Laptops</div>
+      </div>
+    </div>
+</div>

@@ -1,0 +1,149 @@
+<!-- account-management.component.html -->
+<div class="header">
+  <app-header></app-header>
+</div>
+
+<!-- Loading indicators -->
+<app-loading-modules *ngIf="isLoadingModules"></app-loading-modules>
+
+<!-- Main container with Bootstrap flex utilities, mirroring spare-items -->
+<div class="main-container d-flex flex-column flex-lg-row">
+
+  <!-- Side Nav -->
+  <div class="side-nav p-3 p-lg-4">
+    <app-side-nav></app-side-nav>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content flex-grow-1 d-flex flex-column">
+
+    <!-- Toolbar - Mimicking spare-items toolbar -->
+    <div class="toolbar my-toolbar p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap">
+      <div class="toolbar-title d-flex align-items-center">
+        <fa-icon class="me-3 text-primary fs-2" [icon]="faPeopleGroup"></fa-icon>
+        <h1 class="h3 mb-0">Account Management</h1> <!-- Title styling -->
+      </div>
+      <div class="toolbar-actions d-flex flex-wrap gap-2">
+        <!-- Add New User Button - Styled like other primary action buttons -->
+        <button type="button" class="btn btn-success btn-lg me-2" (click)="openAddUserForm()">
+          <fa-icon [icon]="faUserPlus"></fa-icon> Add New User
+        </button>
+      </div>
+    </div>
+
+    <!-- User Management Section - Structured like spare-items content -->
+    <div class="user-management-section flex-grow-1">
+      <h3 class="mb-3">User List</h3> <!-- Styling for section header -->
+
+      <!-- Messages for list-level operations -->
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success" role="alert">
+        {{ successMessage }}
+      </div>
+
+      <!-- Loading indicator for user data -->
+      <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading users...</span>
+        </div>
+        <span class="ms-2 fs-5">Loading users...</span>
+      </div>
+
+      <!-- User Table - Using Bootstrap table classes -->
+      <div class="table-responsive" *ngIf="!isLoading && !errorMessage">
+        <table class="table table-hover table-striped mb-0">
+          <thead class="table-primary">
+            <tr>
+              <!-- Make headers sortable -->
+              <th scope="col" (click)="sortUsers('username')">Username <fa-icon [icon]="getUserSortIcon('username')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('email')">Email <fa-icon [icon]="getUserSortIcon('email')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('first_name')">First Name <fa-icon [icon]="getUserSortIcon('first_name')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('last_name')">Last Name <fa-icon [icon]="getUserSortIcon('last_name')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('role')">Role <fa-icon [icon]="getUserSortIcon('role')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('agile_train')">Agile Train <fa-icon [icon]="getUserSortIcon('agile_train')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('scrum_team')">Scrum Team <fa-icon [icon]="getUserSortIcon('scrum_team')"></fa-icon></th>
+              <th scope="col" (click)="sortUsers('status')">Status <fa-icon [icon]="getUserSortIcon('status')"></fa-icon></th>
+              <th class="text-center">Actions</th> <!-- Centered actions column header -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of displayedUsers" class="table-row-hover"> <!-- Use displayedUsers -->
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.agile_train }}</td>
+              <td>{{ user.scrum_team }}</td>
+              <td>{{ user.status }}</td>
+              <td class="action-buttons-cell text-center"> <!-- Use the same class as spare-items -->
+                <button type="button" class="btn btn-outline-primary btn-sm me-1" (click)="editUser(user); $event.stopPropagation()" title="Edit User">
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteUser(user.id); $event.stopPropagation()" title="Delete User">
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="displayedUsers.length === 0 && !isLoading">
+              <td colspan="9" class="text-center py-4">No users found.</td> <!-- Consistent message -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="d-flex align-items-center justify-content-between mt-3 pagination-controls-wrapper flex-wrap gap-3" *ngIf="!isLoading && !errorMessage">
+        <!-- Items per page selector -->
+        <div class="items-per-page-controls d-flex align-items-center gap-2">
+          <label for="pageSizeSelectUser" class="form-label mb-0">Items per page:</label>
+          <select class="form-select" [(ngModel)]="userPageSize" (change)="onUserPageSizeChange()" id="pageSizeSelectUser" style="width: auto;">
+            <option [ngValue]="5">5</option>
+            <option [ngValue]="10">10</option>
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="100">100</option>
+            <option [ngValue]="'all'">All</option>
+          </select>
+        </div>
+
+        <!-- Pagination Navigation -->
+        <nav aria-label="User Page navigation" *ngIf="userTotalPages > 1 && userPageSize !== 'all'">
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="userPage === 1">
+              <a class="page-link" (click)="onUserPageChange(userPage - 1)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item" *ngFor="let p of getUserPages()" [class.active]="p === userPage" [class.disabled]="p === '...'">
+              <a class="page-link" (click)="handleUserPageLinkClick(p)">
+                {{ p }}
+              </a>
+            </li>
+            <li class="page-item" [class.disabled]="userPage === userTotalPages">
+              <a class="page-link" (click)="onUserPageChange(userPage + 1)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Showing X of Y results -->
+        <div class="results-info" *ngIf="userPageSize !== 'all'">
+          Showing {{ (userPage - 1) * (userPageSize || 1) + 1 }} - {{ (userPage - 1) * (userPageSize || 1) + displayedUsers.length }} of {{ allUsers.length }} results
+        </div>
+        <div class="results-info" *ngIf="userPageSize === 'all'">
+          Showing {{ allUsers.length }} results
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer - Sticky to the bottom of the main content area -->
+    <div class="footer mt-auto p-3 text-center">
+      <p class="mb-0 text-muted">(C)2024 - Developed by Manila Infrastructure Team</p>
+    </div>
+
+  </div>
+</div>

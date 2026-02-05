@@ -1,0 +1,100 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Update Asset Record</h4>
+
+</div>
+<div class="modal-body">
+  <form [formGroup]="assetAddForm" (ngSubmit)="onFormSubmit()">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5 mb-3">
+          <label for="AssetTag" class="form-label">PSS Asset Tag</label>
+          <input type="text" class="form-control" id="AssetTag" formControlName="AssetTag">
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 mb-3">
+          <label for="Description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="Description" formControlName="Description">
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="Location" class="form-label">Location</label>
+          <input type="text" class="form-control" id="Location" formControlName="Location">
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 mb-3">
+          <label for="SerialNumber" class="form-label">Serial Number</label>
+          <input type="text" class="form-control" id="SerialNumber" formControlName="SerialNumber">
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="AssetCondition" class="form-label">Asset Condition</label>
+          <select class="form-select" id="AssetCondition" formControlName="AssetCondition">
+            <option *ngFor="let val of condition" [value]="val">{{val}}</option>  <!--Corrected Interpolate the value -->
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 mb-3">
+          <label for="Specification" class="form-label">Specification</label>
+          <input type="text" class="form-control" id="Specification" formControlName="Specification">
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="GroupAssetCategory" class="form-label">Group Asset Category</label>
+          <select class="form-select" id="GroupAssetCategory" formControlName="GroupAssetCategory">
+            <option *ngFor="let val of GroupCategory" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 mb-3">
+          <label for="PoNumber" class="form-label">PO Number Reference</label>
+          <input type="text" class="form-control" id="PoNumber" formControlName="PoNumber">
+        </div>
+         <div class="col-md-5 mb-3">
+          <label for="Warranty" class="form-label">Warranty Expires</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   name="dp" formControlName="Warranty" ngbDatepicker #d_warranty="ngbDatepicker">
+                   <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d_warranty.toggle()" type="button">
+                    <span class="visually-hidden">Open datepicker</span>
+                  </button>
+          </div>
+        </div>
+           <div class="col-md-5 mb-3">
+          <label for="DateAcquired" class="form-label">Date Acquired</label>
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   name="dp" formControlName="DateAcquired" ngbDatepicker #d_dateAcquired="ngbDatepicker">
+                   <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d_dateAcquired.toggle()" type="button">
+                    <span class="visually-hidden">Open datepicker</span>
+                  </button>
+          </div>
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="CheckoutTo" class="form-label">Checkout To</label>
+          <input type="text" class="form-control" id="CheckoutTo" formControlName="CheckoutTo">
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="AssetCategory" class="form-label">Asset Category</label>
+          <select class="form-select" id="AssetCategory" formControlName="AssetCategory">
+            <option *ngFor="let val of Category" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
+          </select>
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="CostCenter" class="form-label">Cost Center</label>
+          <select class="form-select" id="CostCenter" formControlName="CostCenter">
+            <option *ngFor="let val of CostCenter" [value]="val">{{val}}</option>  <!-- Corrected Interpolate the value -->
+          </select>
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="ScrumTeam" class="form-label">Scrum Team</label>
+          <select class="form-select" id="ScrumTeam" formControlName="ScrumTeam">
+            <option *ngFor="let val of ScrumTeam" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
+          </select>
+        </div>
+        <div class="col-md-5 mb-3">
+          <label for="AgileReleaseTrain" class="form-label">Release Train</label>
+          <select class="form-select" id="AgileReleaseTrain" formControlName="AgileReleaseTrain">
+            <option *ngFor="let val of AgileReleaseTrain" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+  <button type="submit" class="btn btn-primary" (click)="onFormSubmit()">Save changes</button>
+</div>

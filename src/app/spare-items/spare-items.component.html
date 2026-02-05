@@ -1,0 +1,138 @@
+<div class="header">
+  <app-header></app-header>
+</div>
+
+<!-- Loading indicators -->
+<app-loading-modules *ngIf="isLoadingModules"></app-loading-modules>
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+<!-- Main container with Bootstrap flex utilities -->
+<div class="main-container d-flex flex-column flex-lg-row">
+
+  <!-- Side Nav -->
+  <div class="side-nav p-3 p-lg-4">
+    <app-side-nav></app-side-nav>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content flex-grow-1 d-flex flex-column">
+
+    <!-- Toolbar -->
+    <div class="toolbar my-toolbar p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap">
+      <div class="toolbar-title d-flex align-items-center">
+        <!-- Keep faTools for spare items -->
+        <fa-icon class="me-3 text-primary fs-2" [icon]="faTools"></fa-icon>
+        <h1 Spare class="h3 mb-0">Spare Items</h1> <!-- Title changed -->
+      </div>
+      <div class="toolbar-actions d-flex flex-wrap gap-2">
+        <!-- Download Button -->
+        <button type="button" class="btn btn-success btn-lg me-2" (click)="exportToExcel()" [disabled]="isLoading">
+          <fa-icon [icon]="faDownload"></fa-icon> Download
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Input -->
+    <div class="mb-4">
+      <div class="d-flex align-items-center">
+        <fa-icon class="me-2 text-muted" [icon]="faMagnifyingGlass"></fa-icon>
+        <label for="filterInput" class="form-label fs-5 fw-bold mb-0">Search Spare Items</label> <!-- Label updated -->
+      </div>
+      <input type="text" class="form-control form-control-lg mt-2" id="filterInput" (keyup)="applyFilter($event)" placeholder="Filter by Asset Tag, Description, Serial Number, etc."> <!-- Placeholder updated -->
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive flex-grow-1">
+      <table class="table table-hover table-striped mb-0">
+        <thead class="table-primary">
+          <tr>
+            <!-- Headers matching your spare items data -->
+            <th scope="col" (click)="sortData('AssetTag')">Asset Tag <fa-icon [icon]="getSortIcon('AssetTag')"></fa-icon></th>
+            <th scope="col" (click)="sortData('Description')">Description <fa-icon [icon]="getSortIcon('Description')"></fa-icon></th>
+            <th scope="col" (click)="sortData('SerialNumber')">Serial Number <fa-icon [icon]="getSortIcon('SerialNumber')"></fa-icon></th>
+            <th scope="col" (click)="sortData('CostCenter')">Cost Center <fa-icon [icon]="getSortIcon('CostCenter')"></fa-icon></th>
+            <th scope="col" (click)="sortData('Warranty')">Warranty <fa-icon [icon]="getSortIcon('Warranty')"></fa-icon></th>
+            <th scope="col" (click)="sortData('PoNumber')">PO Number <fa-icon [icon]="getSortIcon('PoNumber')"></fa-icon></th>
+            <!-- Add/remove columns as needed for your spare items -->
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+         <tbody>
+          <!-- Added row click for details and matching action button styles -->
+          <tr *ngFor="let asset of displayedData; let i = index" (click)="openAssetDetailsModal(asset)" class="table-row-hover">
+            <td>{{ asset.AssetTag }}</td>
+            <td>{{ asset.Description }}</td>
+            <td>{{ asset.SerialNumber }}</td>
+            <td>{{ asset.CostCenter }}</td>
+            <td>{{ asset.Warranty | date:'shortDate' }}</td> <!-- Use Bootstrap's date pipe format -->
+            <td>{{ asset.PoNumber }}</td>
+            <td class="action-buttons-cell text-center"> <!-- Center action buttons -->
+              <!-- Adjusted button styles for consistency -->
+              <button type="button" class="btn btn-outline-primary btn-sm me-1" (click)="openEditAssetsForm(asset); $event.stopPropagation()">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteAsset(asset.id); $event.stopPropagation()">
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </td>
+          </tr>
+          <!-- Placeholder for empty table -->
+          <tr *ngIf="displayedData.length === 0 && !isLoadingModules && !isLoading">
+            <td colspan="7" class="text-center py-4">No Spare Assets found.</td> <!-- Consistent message -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls Section -->
+    <div class="d-flex align-items-center justify-content-between mt-3 pagination-controls-wrapper flex-wrap gap-3">
+      <!-- Items per page selector -->
+      <div class="items-per-page-controls d-flex align-items-center gap-2">
+        <label for="pageSizeSelect" class="form-label mb-0">Items per page:</label>
+        <select class="form-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()" id="pageSizeSelect" style="width: auto;">
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="100">100</option>
+          <option [ngValue]="'all'">All</option>
+        </select>
+      </div>
+
+      <!-- Pagination Navigation -->
+      <nav aria-label="Page navigation" *ngIf="totalPages > 1 && pageSize !== 'all'">
+        <ul class="pagination mb-0">
+          <li class="page-item" [class.disabled]="page === 1">
+            <a class="page-link" (click)="onPageChange(page - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <!-- Changed here to call the new helper method -->
+          <li class="page-item" *ngFor="let p of getPages()" [class.active]="p === page" [class.disabled]="p === '...'">
+            <a class="page-link" (click)="handlePageLinkClick(p)">
+              {{ p }}
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="page === totalPages">
+            <a class="page-link" (click)="onPageChange(page + 1)" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Showing X of Y results -->
+      <div class="results-info" *ngIf="pageSize !== 'all'">
+        Showing {{ (page - 1) * (pageSize || 1) + 1 }} - {{ (page - 1) * (pageSize || 1) + displayedData.length }} of {{ dataSource.length }} results
+      </div>
+      <div class="results-info" *ngIf="pageSize === 'all'">
+        Showing {{ dataSource.length }} results
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer mt-4 p-3 text-center">
+      <p class="mb-0 text-muted">(C)2025 - Developed by Manila Infrastructure Team</p>
+    </div>
+
+  </div>
+</div>

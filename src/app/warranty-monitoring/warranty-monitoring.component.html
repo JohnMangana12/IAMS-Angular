@@ -1,0 +1,139 @@
+<div class="header">
+  <app-header></app-header>
+</div>
+
+<div class="main-container">
+  <div class="side-nav">
+    <app-side-nav></app-side-nav>
+  </div>
+  <div class="main">
+    <!-- Toolbar Section -->
+    <div class="toolbar my-toolbar bg-white shadow-lg sticky-top py-3 px-4">
+      <div class="d-flex align-items-center">
+        <fa-icon class="fa-icon me-3 text-primary" [icon]="faCertificate"></fa-icon>
+        <span class="fs-4 fw-bold text-dark">Asset Warranty Per Cost Center</span>
+      </div>
+      <button class="btn btn-outline-primary d-flex align-items-center shadow-sm" (click)="refreshData()" [disabled]="isLoading">
+        <fa-icon [icon]="faRedo" *ngIf="isLoading" spin class="me-2"></fa-icon>
+        <fa-icon [icon]="faRedo" *ngIf="!isLoading" class="me-2"></fa-icon> Refresh
+      </button>
+    </div>
+
+    <!-- Search and Filter Controls Section -->
+    <div class="filter-search-controls px-4 py-3 bg-light">
+      <!-- Main Search Bar -->
+      <div class="search-container w-100 w-lg-75 m-auto mb-3">
+        <div class="input-group input-group-lg">
+          <input
+            type="text"
+            placeholder="Search by Asset Tag, Description, or Serial Number ..."
+            [(ngModel)]="searchQuery"
+            (input)="applyFilters()"
+            class="form-control border-end-0"
+            aria-label="Search warranty items"
+          />
+          <span class="input-group-text bg-white border-start-0"><fa-icon [icon]="faSearch" class="text-muted"></fa-icon></span>
+        </div>
+      </div>
+
+      <!-- Cost Center Filter Bar -->
+      <div class="filter-bar-container w-100 w-lg-75 m-auto d-flex align-items-center gap-3">
+        <label for="costCenterFilter" class="form-label mb-0 fw-bold text-secondary">Filter by Cost Center:</label>
+        <select
+          id="costCenterFilter"
+          class="form-select form-select-lg flex-grow-1"
+          [(ngModel)]="selectedCostCenter"
+          (change)="applyFilters()"
+          aria-label="Select Cost Center"
+        >
+          <option value="">All Cost Centers</option>
+          <option *ngFor="let cc of availableCostCenters" [value]="cc">{{ cc }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Detailed Warranty List View by Cost Center -->
+    <div class="detailed-warranty-section p-4">
+      <!-- Loading and Error Handling -->
+      <div *ngIf="isLoading" class="text-center my-5 p-5" [@fadeIn]>
+        <fa-icon [icon]="faSpinner" class="fa-spin fa-3x text-primary"></fa-icon>
+        <p class="mt-3 fs-5 text-secondary">Loading asset data...</p>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger text-center my-5 p-5" role="alert" [@fadeIn]>
+        {{ error }}
+      </div>
+
+      <!-- No Data Message -->
+      <div *ngIf="!isLoading && !error && filteredWarrantyData.length === 0" class="text-center my-5 p-5" [@fadeIn]>
+        <p class="fs-5 text-muted">No assets found matching your search criteria.</p>
+      </div>
+
+      <!-- Cost Center Groups -->
+      <div *ngIf="!isLoading && !error && filteredWarrantyData.length > 0" [@listAnimation]="filteredWarrantyData.length">
+        <div *ngFor="let group of filteredWarrantyData; let i = index" class="train-group-card mb-4 shadow-lg rounded-lg" [@itemStagger]="i">
+          <!-- Cost Center Header - Clickable to toggle expansion -->
+          <div class="train-header d-flex justify-content-between align-items-center p-3 bg-white border-bottom cursor-pointer rounded-top" (click)="toggleTrainExpansion(group.train)">
+            <h3 class="mb-0 fs-5 fw-bold text-dark">{{ group.train }}</h3>
+            <fa-icon [icon]="expandedGroups[group.train] ? faChevronUp : faChevronDown" class="text-primary"></fa-icon>
+          </div>
+
+          <!-- Asset Lists - Shown only if the Cost Center group is expanded -->
+          <div *ngIf="expandedGroups[group.train]" class="asset-lists p-3">
+            <!-- Section for Assets with Warranty -->
+            <div class="asset-category-section mb-4">
+              <div class="category-header d-flex align-items-center mb-3">
+                <fa-icon [icon]="faCheckCircle" class="status-icon status-good fa-lg me-2"></fa-icon>
+                <span class="fs-6 fw-semibold text-success">In Warranty ({{ group.assetsWithWarranty.length }})</span>
+              </div>
+              <!-- List of assets with warranty -->
+              <ul *ngIf="group.assetsWithWarranty.length > 0" class="list-group list-group-flush">
+                <li *ngFor="let asset of group.assetsWithWarranty" class="list-group-item d-flex justify-content-between align-items-center asset-item status-good">
+                  <div class="asset-info flex-grow-1 me-2">
+                    <span class="asset-tag fw-bold text-primary me-1">{{ asset.AssetTag }}</span> -
+                    <span class="asset-desc text-secondary">{{ asset.Description || 'No Description' }}</span>
+                  </div>
+                  <div class="asset-details text-muted d-flex align-items-center flex-wrap">
+                    <span class="asset-category fst-italic me-2">({{ asset.AssetCategory }})</span>
+                    <span class="asset-cost-center fw-bold me-2">CC: {{ asset.CostCenter || 'N/A' }}</span>
+                    <span class="asset-serial-number me-2">SN: {{ asset.SerialNumber || 'N/A' }}</span>
+                    <span class="warranty-end">Expires: {{ asset.Warranty | date:'short' }}</span>
+                  </div>
+                </li>
+              </ul>
+              <p *ngIf="group.assetsWithWarranty.length === 0" class="text-muted fst-italic ms-2">No assets currently in warranty for this Cost Center.</p>
+            </div>
+
+            <!-- Section for Assets Without Warranty -->
+            <div class="asset-category-section">
+              <div class="category-header d-flex align-items-center mb-3">
+                <fa-icon [icon]="faExclamationTriangle" class="status-icon status-bad fa-lg me-2"></fa-icon>
+                <span class="fs-6 fw-semibold text-danger">Out of Warranty ({{ group.assetsWithoutWarranty.length }})</span>
+              </div>
+              <!-- List of assets out of warranty -->
+              <ul *ngIf="group.assetsWithoutWarranty.length > 0" class="list-group list-group-flush">
+                <li *ngFor="let asset of group.assetsWithoutWarranty" class="list-group-item d-flex justify-content-between align-items-center asset-item status-bad">
+                  <div class="asset-info flex-grow-1 me-2">
+                    <span class="asset-tag fw-bold text-danger me-1">{{ asset.AssetTag }}</span> -
+                    <span class="asset-desc text-secondary">{{ asset.Description || 'No Description' }}</span>
+                  </div>
+                  <div class="asset-details text-muted d-flex align-items-center flex-wrap">
+                    <span class="asset-category fst-italic me-2">({{ asset.AssetCategory }})</span>
+                    <span class="asset-cost-center fw-bold me-2">CC: {{ asset.CostCenter || 'N/A' }}</span>
+                    <span class="asset-serial-number me-2">SN: {{ asset.SerialNumber || 'N/A' }}</span>
+                    <span class="warranty-end">Expires: {{ asset.Warranty ? (asset.Warranty | date:'short') : 'N/A' }}</span>
+                  </div>
+                </li>
+              </ul>
+              <p *ngIf="group.assetsWithoutWarranty.length === 0" class="text-muted fst-italic ms-2">No assets currently out of warranty for this Cost Center.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer bg-light py-3 text-center text-muted mt-4">
+        <p class="mb-0">(C)2025 - Developed by Manila Infrastructure Team</p>
+      </div>
+    </div>
+  </div>
+</div>

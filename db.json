@@ -1,0 +1,269 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "a title",
+      "views": 100
+    },
+    {
+      "id": "2",
+      "title": "another title",
+      "views": 200
+    }
+  ],
+  "comments": [
+    {
+      "id": "1",
+      "text": "a comment about post 1",
+      "postId": "1"
+    },
+    {
+      "id": "2",
+      "text": "another comment about post 1",
+      "postId": "1"
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "assets": [
+    {
+      "AssetTag": "PSS-031",
+      "Description": "Dell OEMR XL R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "14884F3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver,1TB 7.2K RPM SAS HDD,16GB RDIMM, 3200",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168012264",
+      "Warranty": "2026-10-01T16:00:00.000Z",
+      "CheckoutTo": "Geneta, Geraldine [EMR/SYSS/PSS/MNL]",
+      "AssetCategory": "Server",
+      "id": "3949"
+    },
+    {
+      "AssetTag": "PSS-032",
+      "Description": "Dell OEMR XL R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "G3884F3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver,192GB RDIMM 3200, 2.4TB 15K RPM SAS HDD ",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168012995",
+      "Warranty": "2026-09-14T16:00:00.000Z",
+      "CheckoutTo": "Natividad, Patrick [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "be8d"
+    },
+    {
+      "AssetTag": "PSS-033",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "5YFWJF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver, 192GB RDIMM 3200,1.2TB 15K RPM SAS HDD",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013034",
+      "Warranty": "2024-10-04T16:00:00.000Z",
+      "CheckoutTo": "Gutierrez, Arlene [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "a651"
+    },
+    {
+      "AssetTag": "PSS-034",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "7YFWJF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 192GB RDIMM 3200, 1.2TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013034",
+      "Warranty": "2024-10-04T16:00:00.000Z",
+      "CheckoutTo": "Gutierrez, Arlene [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "d897"
+    },
+    {
+      "AssetTag": "PSS-035",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "6YFWJF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 192GB RDIMM, 3200, 1.2TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013034",
+      "Warranty": "2024-10-04T16:00:00.000Z",
+      "CheckoutTo": "Gutierrez, Arlene [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "f93d"
+    },
+    {
+      "AssetTag": "PSS-036",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "6CHHJF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 3.6TB 15K RPM SAS, 192GB RDIMM, 3200",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013162",
+      "Warranty": "2024-10-04T16:00:00.000Z",
+      "CheckoutTo": "Valderama, Ryan [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "e480"
+    },
+    {
+      "AssetTag": "PSS-037",
+      "Description": "DELL PowerEdge T640 - SE2711C03",
+      "Location": "45F SW Lab",
+      "SerialNumber": "CY8XRF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4112, 16GB RDIMM, 3200, 1.6TB SSD SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013201",
+      "Warranty": "2024-10-18T16:00:00.000Z",
+      "CheckoutTo": "Amadeo, Emmy [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "ace7"
+    },
+    {
+      "AssetTag": "PSS-039",
+      "Description": "DELL PowerEdge T640 - SE2711C03",
+      "Location": "45F SW Lab",
+      "SerialNumber": "FY8XRF3",
+      "AssetCondition": "Good",
+      "Specification": " Intel Xeon Silver 4112, 16GB RDIMM, 3200, 1.6TB SSD SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013201",
+      "Warranty": "2024-10-18T16:00:00.000Z",
+      "CheckoutTo": "Amadeo, Emmy [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "77ce"
+    },
+    {
+      "AssetTag": "PSS-040",
+      "Description": "DELL PowerEdge T640 - SE2711C03",
+      "Location": "45F SW Lab",
+      "SerialNumber": "GY8XRF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4112, 16GB RDIMM, 3200, 1.6TB SSD SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013201",
+      "Warranty": "2021-07-17T16:00:00.000Z",
+      "CheckoutTo": "Nistal Jr., Mario [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "b95c"
+    },
+    {
+      "AssetTag": "PSS-051",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "3WYTSH3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 192GB RDIMM, 3200, 1.2TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168012828",
+      "Warranty": "2026-12-22T16:00:00.000Z",
+      "CheckoutTo": "David, Clint [EMR/SYSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "5486"
+    },
+    {
+      "AssetTag": "PSS-052",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Noisy Room",
+      "SerialNumber": "5CHHJF3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 192GB RDIMM, 3200, 3.6TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013163",
+      "Warranty": "2026-10-05T16:00:00.000Z",
+      "CheckoutTo": "Valderama, Ryan [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "0326"
+    },
+    {
+      "AssetTag": "PSS-075",
+      "Description": "Dell PowerEdge R740",
+      "Location": "45F Noisy Room",
+      "SerialNumber": "3DDWSK3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Silver 4114, 192GB RDIMM, 3200, 3.6TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168013775",
+      "Warranty": "2027-04-10T16:00:00.000Z",
+      "CheckoutTo": "Natividad, Patrick [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "c408"
+    },
+    {
+      "AssetTag": "PSS-078",
+      "Description": "PowerEdge R740",
+      "Location": "45F SW Lab",
+      "SerialNumber": "G2N36Q3",
+      "AssetCondition": "Good",
+      "Specification": " Intel Xeon Gold 6240, 64GB RDIMM, 3200, 3.6TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168014244",
+      "Warranty": "2025-06-21T16:00:00.000Z",
+      "CheckoutTo": "Dizon, Pauline Joice [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "3b72"
+    },
+    {
+      "AssetTag": "PSS-079",
+      "Description": "PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "F3N36Q3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Gold 6240, 3.6TB 15K RPM SAS, 64GB RDIMM, 3200 ",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168014244",
+      "Warranty": "2025-06-21T16:00:00.000Z",
+      "CheckoutTo": "Bacanto, Hanna [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "cf58"
+    },
+    {
+      "AssetTag": "PSS-080",
+      "Description": "PowerEdge R740",
+      "Location": "45F Noisy Room",
+      "SerialNumber": "G3N36Q3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Gold 6240, 64GB RDIMM, 3200, 3.6TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168014244",
+      "Warranty": "2025-06-21T16:00:00.000Z",
+      "CheckoutTo": "Natividad, Patrick [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "2434"
+    },
+    {
+      "AssetTag": "PSS-081 ",
+      "Description": "PowerEdge R740",
+      "Location": "45F Quiet Room",
+      "SerialNumber": "H2N36Q3",
+      "AssetCondition": "Good",
+      "Specification": "Intel Xeon Gold 6240, 64GB RDIMM, 3200, 3.6TB 15K RPM SAS",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "4168014244",
+      "Warranty": "2025-06-21T16:00:00.000Z",
+      "CheckoutTo": "Dizon, Pauline Joice [EMR/SYSS/PSS/MAND]",
+      "AssetCategory": "Server",
+      "id": "417e"
+    },
+    {
+      "id": "5378",
+      "AssetTag": "12321",
+      "Description": "awdwa",
+      "Location": "awdwa",
+      "SerialNumber": "awdwad",
+      "AssetCondition": "Good",
+      "Specification": "aw",
+      "GroupAssetCategory": "Capitalize Assets",
+      "PoNumber": "22112",
+      "Warranty": "2025-01-20T16:00:00.000Z",
+      "CheckoutTo": "john",
+      "AssetCategory": "Desktop"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+@use "sass:color";
+.nav-items {
+  padding-top: 50px;
+
+  .nav-item {
+    font-family: "Exo", sans-serif;
+    text-transform: uppercase;
+    padding: 30px 40px;
+    cursor: pointer;
+    overflow: hidden; // Prevent text from overflowing during collapse
+
+    @media only screen and (max-width: 1300px) {
+      padding: 25px 40px;
+    }
+
+    &:hover,
+    &.active-nav-item { /* <-- ADD THIS LINE */
+      background-color: rgb(1, 60, 114);
+    }
+
+    fa-icon {
+      margin-right: 20px;
+      font-size: 26px;
+    }
+
+    span {
+      display: inline;
+    }
+
+    a.no-underline {
+      text-decoration: none; /* Remove underline */
+      color: inherit; /* Inherit color from parent */
+      display: flex; // For icon, text, and arrow alignment
+      align-items: center;
+      width: 100%; // Make anchor fill its parent
+
+      /* Hide the text on small screens */
+      @media only screen and (max-width: 778px) {
+        span {
+          display: none;
+        }
+      }
+    }
+
+    // Styles for the parent item that has a dropdown
+    &.has-dropdown {
+      .dropdown-arrow {
+        margin-left: auto; // Push arrow to the right
+        transition: transform 0.2s ease-in-out;
+        font-size: 18px; // Smaller arrow icon
+      }
+    }
+  }
+
+  // Dropdown List Wrapper for smooth collapse/expand
+  .dropdown-list-wrapper {
+    max-height: 0; // Initial hidden state
+    overflow: hidden; // Hide overflow content
+    transition: max-height 0.3s ease-in-out; // Smooth transition
+
+    &.open {
+      max-height: 300px; // A value large enough to fit all dropdown items
+    }
+  }
+
+  .dropdown-list {
+    background-color: color.adjust( #343a40); // Slightly darker background for distinction
+
+    .nav-item.sub-item {
+      padding: 15px 40px 15px 60px; // Indent sub-items (more padding-left)
+      font-size: 0.9em; // Slightly smaller font for sub-items
+      text-transform: capitalize; // Optional: lowercase for sub-items
+
+      fa-icon {
+        display: none; // Hide icons for sub-items if not needed
+      }
+
+      a.no-underline {
+        @media only screen and (max-width: 778px) {
+          span {
+            display: inline; // Ensure sub-item text is always visible, even when main items are compressed
+          }
+        }
+      }
+    }
+  }
+}

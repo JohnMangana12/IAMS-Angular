@@ -1,0 +1,36 @@
+.nav-items {
+  padding-top: 50px;
+  .nav-item {
+    font-family: "Exo", sans-serif;
+    text-transform: uppercase;
+    padding: 30px 50px;
+    cursor: pointer;
+    @media only screen and (max-width: 1300px) {
+      padding: 25px 40px;
+    }
+     // Combine hover and the new active class
+
+    &.active-nav-item { /* <-- ADD THIS LINE */
+      background-color: rgb(33, 135, 231);
+    }
+    fa-icon {
+      margin-right: 20px;
+      font-size: 26px;
+    }
+    span {
+      /* Removed the media query here. Text will always be displayed */
+      display: inline;
+    }
+    a.no-underline {
+      text-decoration: none; /* Remove underline */
+      color: inherit; /* Inherit color from parent */
+
+      /* Hide the text on small screens */
+      @media only screen and (max-width: 778px) { /* Adjust breakpoint as needed */
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+}

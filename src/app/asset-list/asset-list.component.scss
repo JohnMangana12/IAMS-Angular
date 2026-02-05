@@ -1,0 +1,344 @@
+
+
+// Container for the entire pagination row
+.pagination-controls-wrapper {
+  display: flex; // Already set by d-flex but good to be explicit
+  align-items: center; // Vertically center items (already set by Bootstrap align-items-center)
+  width: 100%; // Ensure it spans the full width of its parent
+  /* No justify-content needed here, flex-grow on spacers handles distribution */
+  }
+ /* <-- Add this closing bracket to properly close .my-toolbar */
+
+// Styling for the "Items per page" section
+.items-per-page-controls {
+  flex-shrink: 0; // Prevent this section from shrinking if space is tight
+  padding-right: 15px; // Add some space to the right of the select box (optional)
+}
+
+// Ensure the select dropdown has a minimum width
+.items-per-page-controls select {
+  min-width: 120px;
+}
+
+// Container for the pagination navigation
+.pagination-nav-container {
+  flex-shrink: 0; // Prevent the pagination from shrinking
+  /* The flex-grow-1 divs around it will ensure it's centered */
+  /* No explicit display: flex or justify-content: center needed *here*
+     because the surrounding flex-grow-1 divs will push it to the perfect center. */
+}
+
+/* The two `div` elements with `flex-grow-1` in HTML (`<div class="flex-grow-1"></div>`):
+   - These act as flexible spacers.
+   - They will consume equal amounts of the *remaining* available space.
+   - By placing them on both sides of your pagination controls, they effectively push
+     the pagination to the precise horizontal center of the `pagination-controls-wrapper`.
+*/
+
+
+/* General Layout & Theme */
+.header {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa; /* Light background */
+}
+
+/* Toolbar */
+.my-toolbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6; /* Subtle separator */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Lighter shadow for toolbar */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Nicer font */
+
+  .toolbar-title {
+    h1 {
+      font-size: 2rem; /* Adjust font size */
+      font-weight: 600; /* Slightly less bold */
+      color: #495057; /* Darker grey */
+    }
+    fa-icon {
+      font-size: 2rem; /* Adjust icon size */
+      color: #0d6efd; /* Bootstrap primary color for icon */
+    }
+  }
+
+  .toolbar-actions {
+    .btn {
+      font-weight: 500; /* Medium font weight for buttons */
+      text-transform: uppercase; /* Uppercase button text */
+      letter-spacing: 0.5px;
+      padding: 0.45rem 0.9rem; /* Smaller buttons */
+      font-size: 1.2rem; /* Smaller font size for buttons */
+    }
+    .btn-sm {
+        padding: 0.35rem 0.75rem; /* Even smaller for sm buttons */
+        font-size: 0.8rem;
+    }
+
+    .btn-success {
+      background-color: #198754; /* Bootstrap success */
+      border-color: #198754;
+      &:hover {
+        background-color: #157347;
+        border-color: #146c43;
+      }
+    }
+
+    .btn-info {
+      background-color: #0dcaf0; /* Bootstrap info */
+      border-color: #0dcaf0;
+      &:hover {
+        background-color: #0cb1d7;
+        border-color: #0bb7d5;
+      }
+    }
+
+    .btn-primary {
+      background-color: #0d6efd; /* Bootstrap primary */
+      border-color: #0d6efd;
+      &:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+      }
+    }
+
+    .hidden-file-input {
+      display: none; /* Still hidden */
+    }
+  }
+}
+/* Filter Input */
+.form-label {
+  font-size: 0.95rem; /* Slightly larger label */
+  color: #495057;
+  font-weight: 600;
+}
+.form-control {
+  border-radius: 0.375rem; /* Standard Bootstrap border-radius */
+}
+.form-control-lg {
+  border-radius: 0.5rem; /* Larger border-radius for lg input */
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+}
+
+.toolbar-title {  /* Styles for the wrapper */
+  display: flex;
+  align-items: center; /* Vertically center the icon and text */
+  // Target the fa-icon specifically within the toolbar title
+    fa-icon {
+        font-size: 40px;
+        margin-right: 20px;
+    }
+}
+
+.toolbar-actions {
+  margin-left: auto; /* Push actions to the right.  Important if you *don't* want them to stay next to the title */
+
+
+}
+.main-container {
+  display: flex;
+  height: calc(100vh - 70px); /*  Subtract the header height here */
+  overflow: hidden; /* Prevent the entire container from scrolling */
+
+  .side-nav {
+    width: 400px;
+    min-width: 350px;
+    //min-height: calc(100vh - 70px);  // No longer needed, height managed by container
+    background-color: #343a40; /* Dark Bootstrap color */
+
+    color: #fff;
+    box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.5);
+    overflow-y: auto; /*  Enable scroll if content overflows */
+
+    @media only screen and (max-width: 1600px) {
+      width: 300px;
+      min-width: 200px;
+    }
+  }
+}
+.main-content {
+  padding: 20px 25px; /* More padding for main content */
+  background-color: #ffffff; /* White background for content area */
+  overflow-y: auto; /* Enable scrolling for the main content area */
+}
+
+/* Table Styling */
+.table-responsive {
+  flex-grow: 1; /* Allows table to expand to fill available space */
+  overflow-y: auto; /* Vertical scroll for table */
+  // Ensure it has a defined height context if needed, but usually flex-grow is enough
+  // min-height: 0; /* Needed for flex items that scroll */
+
+  table {
+    border-collapse: collapse; /* Cleaner borders */
+    width: 100%; /* Ensure table takes full width */
+    // Remove min-width for better responsiveness
+  }
+
+  thead th {
+    font-weight: 600; /* Semi-bold headers */
+    color: #343a40; /* Darker header text */
+    cursor: pointer; /* Indicate sortable columns */
+    white-space: nowrap; /* Prevent header text wrapping */
+    vertical-align: middle; /* Align vertically */
+
+    fa-icon {
+      margin-left: 8px;
+      font-size: 0.8em; /* Smaller sort icon */
+      color: #6c757d; /* Grey for sort icon */
+    }
+    .sort-icon-active {
+      color: #0d6efd; /* Primary color when active */
+    }
+  }
+
+  tbody td {
+    vertical-align: middle; /* Center cell content vertically */
+    white-space: nowrap; /* Prevent text wrapping in data cells */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Limit column width to prevent overflow */
+
+    &.action-buttons-cell {
+      text-align: center; /* Center buttons */
+      white-space: nowrap; /* Ensure buttons stay on one line */
+      max-width: 120px; /* Give actions a fixed width */
+    }
+  }
+
+  .table-row-hover {
+    cursor: pointer; /* Indicate clickable rows */
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+      background-color: #e9ecef; /* Light hover effect */
+    }
+  }
+
+  /* Customize row colors if needed */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02); /* Subtle stripe */
+  }
+}
+.action-column{
+  width: 100px;
+  text-align: center; /* Add this to center the buttons in the column, similar to account-management */
+
+  }
+.btn-sm {
+  padding: .25rem .5rem !important; // Default Bootstrap padding for btn-sm
+  // If you want them larger, similar to account-management:
+  // padding: 10px 15px; // Example, adjust as needed
+}
+// Add this new rule for the fa-icon within the action-buttons-cell
+.action-buttons-cell fa-icon {
+    font-size: 20px; /* Changed from 18px to match account-management */
+    vertical-align: middle; /* Keep or add this for better alignment */
+}
+
+/* Action Buttons Styling */
+.action-buttons-cell {
+  .btn {
+    padding: 0.25rem 0.5rem; /* Small padding for action buttons */
+    font-size: 0.85rem;
+    border: none; /* Remove default button borders */
+    background: transparent; /* Transparent background */
+    display: inline-flex; /* Align icon nicely */
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* Ensure tight line height */
+    color: #6c757d; /* Default icon color */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+    &:hover {
+      color: #0d6efd; /* Primary color on hover */
+    }
+    &.btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+    &.btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+  }
+
+  .btn-sm {
+      width: 35px; /* Fixed size for action buttons */
+      height: 35px;
+      fa-icon {
+          font-size: 1.1rem; /* Icon size */
+      }
+  }
+
+  .btn-outline-primary {
+    color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  .btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+  }
+}
+/* Footer */
+.footer {
+  border-top: 1px solid #dee2e6; /* Top border for footer */
+  background-color: #f8f9fa; /* Match header background */
+  color: #6c757d; /* Muted text color */
+  font-size: 0.9rem;
+}
+
+/* Pagination Controls */
+.pagination-controls-wrapper {
+  .items-per-page-controls {
+    label {
+      font-size: 0.9rem;
+      color: #495057;
+    }
+    .form-select {
+      padding: 0.375rem 0.75rem; /* Standard padding */
+      font-size: 0.9rem;
+      width: 80px; /* Control width */
+    }
+  }
+
+  .pagination {
+    .page-link {
+      color: #0d6efd; /* Primary color for links */
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      cursor: pointer; /* Indicate clickable */
+
+      &:hover {
+        z-index: 2;
+        color: #004085;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+      }
+    }
+    .page-item.active .page-link {
+      z-index: 3;
+      color: #fff;
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    .page-item.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none;
+      background-color: #fff;
+      border-color: #dee2e6;
+    }
+  }
+
+  .results-info {
+    font-size: 0.9rem;
+    color: #495057;
+  }
+}
+
+/* Specific Button Styles */
+/* Moved these to the toolbar section for better organization */
+

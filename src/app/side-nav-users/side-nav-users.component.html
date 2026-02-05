@@ -1,0 +1,54 @@
+<div class="nav-items">
+  <div class="nav-item " routerLinkActive="active-nav-item">
+    <a routerLink="/dashboard-users" class="no-underline"> <fa-icon [icon]="faDashboard"></fa-icon> <span>Dashboard</span> </a>
+  </div>
+
+  <!-- My Assets Parent Item with Dropdown Toggle -->
+  <div class="nav-item has-dropdown" (click)="toggleAssetsDropdown()" routerLinkActive="active-nav-item">
+    <a class="no-underline">
+      <fa-icon [icon]="faBoxesStacked"></fa-icon>
+      <span>IAMS Assets</span>
+      <!-- Dropdown arrow icon -->
+      <fa-icon [icon]="isAssetsDropdownOpen ? faChevronUp : faChevronDown" class="dropdown-arrow"></fa-icon>
+    </a>
+  </div>
+
+  <!-- Hidden Dropdown List for My Assets -->
+  <div class="dropdown-list-wrapper" [class.open]="isAssetsDropdownOpen">
+    <div class="dropdown-list">
+      <div class="nav-item sub-item" routerLinkActive="active-nav-item">
+        <a routerLink="/my-assets" class="no-underline"> <!-- Removed (click)="closeAssetsDropdown()" -->
+          <span>My Assets</span>
+        </a>
+      </div>
+      <div class="nav-item sub-item" routerLinkActive="active-nav-item">
+        <a routerLink="/scrum-team-assets" class="no-underline"> <!-- Removed (click)="closeAssetsDropdown()" -->
+          <span>Scrum Team Assets</span>
+        </a>
+      </div>
+
+      <!-- Conditionally show Amber Train -->
+      <div class="nav-item sub-item" *ngIf="isAmberTrainUser()" routerLinkActive="active-nav-item">
+        <a routerLink="/amber-assets" class="no-underline"> <!-- Removed (click)="closeAssetsDropdown()" -->
+          <span>Amber Train</span>
+        </a>
+      </div>
+
+      <!-- Conditionally show Green Train -->
+      <div class="nav-item sub-item" *ngIf="isGreenTrainUser()" routerLinkActive="active-nav-item">
+        <a routerLink="/green-assets" class="no-underline"> <!-- Removed (click)="closeAssetsDropdown()" -->
+          <span>Green Train</span>
+        </a>
+      </div>
+      <!-- Add more sub-items as needed -->
+
+    </div>
+  </div>
+
+  <div class="nav-item" routerLinkActive="active-nav-item">
+    <a routerLink="/spare-items-users" class="no-underline"> <fa-icon [icon]="faTools"></fa-icon> <span>Spare Items</span> </a>
+  </div>
+    <div class="nav-item" routerLinkActive="active-nav-item">
+      <a routerLink="/warranty-monitoring-users" class="no-underline"> <fa-icon [icon]="faCertificate"></fa-icon> <span>Warranty Monitoring</span> </a>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+/* Remove all existing custom styles as we're relying on Bootstrap.
+   You can add very specific custom overrides here if needed,
+   but aim to use Bootstrap classes in the HTML as much as possible. */
+
+/* Example of custom styling for snackbars: */
+.error-snackbar {
+  background-color: #dc3545; /* Bootstrap danger color */
+  color: white;
+}
+
+.warning-snackbar {
+  background-color: #ffc107; /* Bootstrap warning color */
+  color: black;
+}
+
+/* You can also style the action button within the snackbar if needed */
+.mat-snack-bar-container .mat-button {
+  color: white !important; /* Ensure button text is visible */
+}
+
+/* If you need to adjust the icon size beyond Bootstrap's fs utilities, you can add: */
+.bi {
+  vertical-align: middle; /* Helps align icons nicely within text */
+}

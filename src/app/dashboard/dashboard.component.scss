@@ -1,0 +1,35 @@
+.container {
+  width: 100.6%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding-left: 0; /* Explicitly reset padding */
+  margin-left: 0; /* Explicitly reset margin */
+}
+.main-container {
+  display: flex;
+  height: calc(100vh - 70px); /*  Subtract the header height here */
+  overflow: hidden; /* Prevent the entire container from scrolling */
+
+ .side-nav {
+    width: 400px;
+    min-width: 350px;
+    //min-height: calc(100vh - 70px);  // No longer needed, height managed by container
+    background-color: #343a40; /* Dark Bootstrap color */
+    padding: 24px 24px;
+    color: #fff;
+    box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.5);
+    overflow-y: auto; /*  Enable scroll if content overflows */
+
+    @media only screen and (max-width: 1600px) {
+      width: 300px;
+      min-width: 200px;
+    }
+  }
+}
+/* Footer */
+.footer {
+  border-top: 1px solid #dee2e6; /* Top border for footer */
+  background-color: #f8f9fa; /* Match header background */
+  color: #6c757d; /* Muted text color */
+  font-size: 0.9rem;
+}

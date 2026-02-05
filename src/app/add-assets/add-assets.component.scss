@@ -1,0 +1,35 @@
+.content {
+  padding-top: 10px;
+}
+
+.blue-button {
+  background-color: blue;
+  color: white;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+
+  .form-group {
+    width: 100%;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-control, .form-select {
+  border-radius: 0.75rem; /* Example: Adjust the border radius */
+  font-size: 1rem;      /* Example: Adjust the font size */
+  /* Add any other consistent styling here */
+}
+
+.modal-title-custom {  // Your new class
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: 210px;
+}

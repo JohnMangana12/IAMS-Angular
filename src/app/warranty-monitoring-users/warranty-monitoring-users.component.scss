@@ -1,0 +1,356 @@
+/* General Layout Adjustments */
+.main-container {
+  display: flex;
+  /* Subtract the header height here */
+  /* Make sure the app-header has a fixed height or is accounted for */
+  height: calc(100vh - 70px);
+  overflow: hidden; /* Prevent the entire container from scrolling */
+}
+
+.side-nav {
+  width: 400px;
+  min-width: 350px;
+  background-color: #343a40; /* Dark Bootstrap color */
+  padding: 24px 24px;
+  color: #fff;
+  box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.5);
+  overflow-y: auto; /* Enable scroll if content overflows */
+
+  @media only screen and (max-width: 1600px) {
+    width: 300px;
+    min-width: 200px;
+  }
+}
+
+.main {
+  flex-grow: 1; // Takes remaining space
+  overflow-y: auto;
+  background-color: #e9ecef; // Light Bootstrap background for content area
+  display: flex;
+  flex-direction: column; // Stack header, search, and content
+}
+
+/* Header Styles */
+.header {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; // More pronounced shadow
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: rgb(252, 252, 252);
+}
+
+/* Toolbar Styles */
+.my-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6; /* Subtle border at the bottom */
+  padding: 1rem 1.5rem; /* Consistent padding */
+
+  .fa-icon { // Targeting Font Awesome icons specifically
+    font-size: 1.8em; // Slightly larger for the title icon
+  }
+  span { // Targeting the title text
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 1.5rem; /* Larger font size for the title */
+    font-weight: 600; /* Semi-bold */
+    color: #343a40; /* Darker color for title */
+  }
+  .btn-outline-primary {
+    // Styling for the refresh button
+    &:hover {
+      background-color: #0d6efd; // Bootstrap primary hover
+      color: white;
+    }
+    &:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Filter and Search Controls Section Styles */
+.filter-search-controls {
+  border-bottom: 1px solid #dee2e6; /* Subtle border */
+  padding: 1.5rem 1rem; /* Consistent padding */
+  background-color: #f8f9fa; /* Light background to differentiate from main content */
+
+  .search-container {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 960px; /* Limit width for better readability on large screens */
+  }
+
+  .filter-bar-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 500px; /* Limit width for better readability on large screens */
+  }
+
+  .input-group-lg > .form-control, .input-group-lg > .form-select {
+    font-size: 1.1rem; /* Larger inputs for better usability */
+    padding: 0.75rem 1rem;
+  }
+
+  .input-group-text {
+    background-color: #ffffff; /* White background for the icon */
+    border-left: none; /* Remove border to join with input */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem; /* Match input padding */
+    .fa-icon {
+      font-size: 1.2em;
+      color: #6c757d; /* Muted color for search icon */
+    }
+  }
+
+  .form-select-lg {
+    padding-right: 2.5rem; /* Make space for the arrow */
+  }
+
+  .form-label {
+    font-weight: 500; /* Semi-bold labels */
+    color: #495057; /* Slightly darker than muted */
+  }
+}
+
+
+/* Detailed Warranty Section Styles */
+.detailed-warranty-section {
+  flex-grow: 1; // Allow this section to take available vertical space
+  padding: 2rem;
+
+  .train-group-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem; /* Softer rounded corners */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.075) !important; /* Softer shadow */
+    border: 1px solid #e0e0e0;
+
+    .train-header {
+      background-color: #f8f9fa; /* Light gray background for header */
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+
+      h3 {
+        margin: 0;
+        font-size: 1.25rem; /* Bootstrap's h5 size */
+        font-weight: 600; /* Semi-bold for group title */
+        color: #343a40; /* Darker text for titles */
+      }
+      fa-icon {
+        font-size: 1.1em;
+        color: #6c757d; /* Muted color for arrow */
+        transition: transform 0.2s ease-in-out;
+      }
+      &:hover {
+        background-color: #e9ecef; /* Slight hover effect */
+      }
+    }
+
+    .asset-lists {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem; /* Space between asset categories */
+
+      .asset-category-section {
+        .category-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 1rem; /* Space below category header */
+
+          .status-icon {
+            font-size: 1.5em; /* Slightly larger icons */
+            margin-right: 0.75rem !important;
+            padding: 0.4rem;
+            border-radius: 0.3rem;
+          }
+          .status-good {
+            .status-icon {
+              color: #28a745; /* Bootstrap success green */
+              background-color: rgba(40, 167, 69, 0.1); /* Light success background */
+            }
+          }
+          .status-bad {
+            .status-icon {
+              color: #dc3545; /* Bootstrap danger red */
+              background-color: rgba(220, 53, 69, 0.1); /* Light danger background */
+            }
+          }
+          span {
+            font-weight: 600; /* Semi-bold for category count */
+            font-size: 1.1rem; /* Slightly larger text for category count */
+          }
+        }
+
+        .list-group-item.asset-item {
+          padding: 1rem 1.25rem;
+          font-size: 0.95rem;
+          border-radius: 0.35rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap; /* Allow wrapping */
+          gap: 0.75rem; /* Space between elements within an asset item */
+          border-left: 5px solid transparent; /* Placeholder for status border */
+          margin-bottom: 0.5rem; /* Space between list items */
+
+          &.status-good {
+            border-left: 5px solid #28a745; /* Bootstrap success green */
+            background-color: rgba(40, 167, 69, 0.05); /* Very light green background */
+          }
+          &.status-bad {
+            border-left: 5px solid #dc3545; /* Bootstrap danger red */
+            background-color: rgba(220, 53, 69, 0.05); /* Very light red background */
+          }
+
+          .asset-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            flex-grow: 1;
+            min-width: 200px; /* Ensure tag and description have some space */
+
+            .asset-tag {
+              font-weight: 700; /* Bootstrap bold */
+              flex-shrink: 0;
+              color: #0d6efd; /* Primary color for asset tag */
+            }
+            .asset-desc {
+              margin: 0 0.75rem; /* Space between tag and description */
+              color: #495057; /* Darker text for description */
+            }
+          }
+
+          .asset-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            font-size: 0.875rem; /* Bootstrap small font size */
+            color: #6c757d; /* Muted text */
+            flex-shrink: 0; /* Prevent shrinking too much */
+
+            .asset-category {
+              font-style: italic;
+            }
+            .asset-cost-center {
+              font-weight: 500; /* Slightly bolder for cost center */
+              color: #343a40; /* Darker color for emphasis */
+            }
+            .warranty-end {
+              font-weight: 500;
+              color: #343a40; /* Darker color for emphasis */
+            }
+          }
+        }
+        p {
+          // Style for "No assets..." messages
+          margin-left: 0.5rem !important; /* Adjust spacing if needed */
+          font-style: italic;
+          color: #6c757d;
+        }
+      }
+    }
+  }
+}
+
+/* Footer Styles */
+.footer {
+  margin-top: auto; /* Push footer to the bottom of the main content area */
+  background-color: #f8f9fa; /* Consistent with main background */
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85em;
+  color: #6c757d;
+  border-top: 1px solid #dee2e6; /* Subtle border at the top */
+}
+
+/* Responsive Adjustments for Toolbar and Search */
+@media (max-width: 767.98px) { /* Bootstrap's sm breakpoint */
+  .my-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    span {
+      font-size: 1.3rem; /* Smaller font for mobile title */
+    }
+    .fa-icon {
+        font-size: 1.5rem;
+    }
+  }
+  .filter-search-controls {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    .search-container, .filter-bar-container {
+      max-width: 100%; /* Allow controls to take full width */
+    }
+    .input-group-lg > .form-control, .input-group-lg > .form-select {
+      font-size: 1rem;
+      padding: 0.6rem 0.8rem;
+    }
+    .input-group-text {
+      padding: 0.6rem 0.8rem;
+    }
+    .form-label {
+      font-size: 0.95rem;
+    }
+    .filter-bar-container {
+        flex-direction: column; /* Stack label and select */
+        align-items: flex-start;
+        gap: 0.5rem;
+        .form-select-lg {
+            width: 100%;
+        }
+    }
+  }
+
+  .detailed-warranty-section {
+    padding: 1rem;
+    .train-group-card {
+      .train-header {
+        padding: 0.75rem 1rem;
+        h3 {
+          font-size: 1.1rem;
+        }
+      }
+      .asset-lists {
+        padding: 1rem;
+        .asset-category-section .asset-item {
+          padding: 0.75rem 1rem;
+          flex-direction: column;
+          align-items: flex-start;
+          .asset-info {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            .asset-desc {
+              margin: 0 0.5rem;
+            }
+          }
+          .asset-details {
+            width: 100%;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            .asset-cost-center, .asset-serial-number, .asset-category {
+                margin-bottom: 0.5rem; /* Add spacing when stacked */
+            }
+            .asset-cost-center {
+              margin-right: 0 !important; /* Remove right margin when stacked */
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Ensure fa-icon is a block element for proper styling
+fa-icon {
+  display: inline-block;
+}

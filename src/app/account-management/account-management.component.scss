@@ -1,0 +1,351 @@
+/* account-management.component.scss */
+
+/* General Layout & Theme */
+.header {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa; /* Light background, matching spare-items */
+}
+
+/* Main container with flex properties */
+.main-container {
+  display: flex;
+  height: calc(100vh - 70px); /* Subtract the header height */
+  overflow: hidden; /* Prevent the entire container from scrolling */
+}
+
+/* Side Nav Styling */
+.side-nav {
+  width: 400px;
+  min-width: 350px;
+  background-color: #343a40; /* Dark Bootstrap color */
+  color: #fff;
+  box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.5);
+  overflow-y: auto; /* Enable scroll if content overflows */
+
+  @media only screen and (max-width: 1600px) {
+    width: 300px;
+    min-width: 200px;
+  }
+}
+
+/* Main Content Area Styling */
+.main-content {
+  padding: 20px 25px; /* More padding for main content, matching spare-items */
+  background-color: #ffffff; /* White background for content area */
+  overflow-y: auto; /* Enable scrolling for the main content area */
+  display: flex; /* Use flex to manage internal layout */
+  flex-direction: column; /* Stack children vertically */
+  flex-grow: 1; /* Allow content to grow */
+}
+
+/* Toolbar Styling - Mimicking spare-items */
+.my-toolbar {
+  background-color: #ffffff; /* White background */
+  border-bottom: 1px solid #dee2e6; /* Subtle separator */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Lighter shadow for toolbar */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Nicer font */
+  color: #4b4b4b; /* Darker text color */
+  padding: 1rem 1.5rem; /* Adjusted padding */
+  margin-bottom: 1.5rem; /* Space below toolbar */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 0.75rem; /* Space between elements when wrapping */
+
+  .toolbar-title {
+    display: flex;
+    align-items: center;
+
+    h1 {
+      font-size: 2rem; /* Title font size */
+      font-weight: 600; /* Medium bold */
+      color: #495057; /* Darker grey text */
+      margin-bottom: 0; /* Remove default margin */
+    }
+
+    fa-icon {
+      font-size: 2rem; /* Icon size matching h1 */
+      color: #0d6efd; /* Bootstrap primary color for icon */
+      margin-right: 1rem; /* Space between icon and title */
+    }
+  }
+
+  .toolbar-actions {
+    .btn {
+      font-weight: 500; /* Medium font weight for buttons */
+      text-transform: uppercase; /* Uppercase button text */
+      letter-spacing: 0.5px;
+      padding: 0.45rem 0.9rem; /* Smaller buttons */
+      font-size: 1.2rem; /* Smaller font size for buttons */
+    }
+    .btn-sm {
+        padding: 0.35rem 0.75rem; /* Even smaller for sm buttons */
+        font-size: 0.8rem;
+    }
+
+    .btn-success {
+      background-color: #198754; /* Bootstrap success */
+      border-color: #198754;
+      &:hover {
+        background-color: #157347;
+        border-color: #146c43;
+      }
+    }
+
+    .btn-info {
+      background-color: #0dcaf0; /* Bootstrap info */
+      border-color: #0dcaf0;
+      &:hover {
+        background-color: #0cb1d7;
+        border-color: #0bb7d5;
+      }
+    }
+
+    .btn-primary {
+      background-color: #0d6efd; /* Bootstrap primary */
+      border-color: #0d6efd;
+      &:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+      }
+    }
+
+
+  }
+}
+
+/* User Management Section Styling */
+.user-management-section {
+  padding: 20px;
+  background-color: #fff; /* White background for the section content */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-top: 20px; /* Space above the section */
+  display: flex; /* Use flex to manage internal layout */
+  flex-direction: column; /* Stack children vertically */
+  flex-grow: 1; /* Allow this section to take available space */
+
+  h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 28px; /* Larger heading */
+    border-bottom: 2px solid #eee; /* Separator line */
+    padding-bottom: 10px;
+    font-weight: 600;
+  }
+}
+
+/* Table Styling - Consistent with spare-items */
+.table-responsive {
+  flex-grow: 1; /* Allows table to expand to fill available space */
+  overflow-y: auto; /* Vertical scroll for table */
+
+  table {
+    border-collapse: collapse; /* Cleaner borders */
+    width: 100%; /* Ensure table takes full width */
+  }
+
+  thead th {
+    font-weight: 600; /* Semi-bold headers */
+    color: #343a40; /* Darker header text */
+    cursor: pointer; /* Indicate sortable columns */
+    white-space: nowrap; /* Prevent header text wrapping */
+    vertical-align: middle; /* Align vertically */
+    padding: 0.75rem 1rem; /* Consistent padding */
+    position: relative; /* For sort icon positioning */
+
+    fa-icon {
+      margin-left: 8px;
+      font-size: 0.8em; /* Smaller sort icon */
+      color: #6c757d; /* Grey for sort icon */
+    }
+    .sort-icon-active { /* Add this class if you want to style active sort icons */
+      color: #0d6efd; /* Primary color when active */
+    }
+  }
+
+  /* Specific header styling */
+  .table-primary {
+    background-color: #e7f3ff !important; /* Light blue for primary header */
+    color: #0d6efd; /* Bootstrap primary color for text */
+  }
+
+  tbody td {
+    vertical-align: middle; /* Center cell content vertically */
+    padding: 0.75rem 1rem; /* Consistent padding */
+    white-space: nowrap; /* Prevent text wrapping in data cells */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Limit column width to prevent overflow */
+  }
+
+  /* Class for table row hover effect */
+  .table-row-hover {
+    cursor: pointer; /* Indicate clickable rows */
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+      background-color: #e9ecef; /* Light hover effect */
+    }
+  }
+
+  /* Stripes for even rows */
+  .table-striped tbody tr:nth-of-type(even) {
+    background-color: rgba(0, 0, 0, 0.02); /* Subtle stripe */
+  }
+
+.action-buttons-cell fa-icon {
+    font-size: 20px; /* Changed from 18px to match account-management */
+    vertical-align: middle; /* Keep or add this for better alignment */
+}
+
+/* Action Buttons Styling */
+.action-buttons-cell {
+  .btn {
+    padding: 0.25rem 0.5rem; /* Small padding for action buttons */
+    font-size: 0.85rem;
+    border: none; /* Remove default button borders */
+    background: transparent; /* Transparent background */
+    display: inline-flex; /* Align icon nicely */
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* Ensure tight line height */
+    color: #6c757d; /* Default icon color */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+    &:hover {
+      color: #0d6efd; /* Primary color on hover */
+    }
+    &.btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+    &.btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+  }
+
+  .btn-sm {
+      width: 35px; /* Fixed size for action buttons */
+      height: 35px;
+      fa-icon {
+          font-size: 1.1rem; /* Icon size */
+      }
+  }
+
+  .btn-outline-primary {
+    color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  .btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+  }
+ }
+}
+
+/* Messages Styling - Consistent with spare-items */
+.alert {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Loading message for the table */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Pagination Controls Styling - Copied from spare-items */
+.pagination-controls-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 0.75rem; /* Space between controls */
+  justify-content: space-between; /* Space out controls */
+}
+
+/* Styling for the "Items per page" section */
+.items-per-page-controls {
+  flex-shrink: 0; /* Prevent this section from shrinking */
+
+  label {
+    font-size: 0.9rem;
+    color: #495057;
+  }
+
+  .form-select {
+    padding: 0.375rem 0.75rem; /* Standard padding */
+    font-size: 0.9rem;
+    width: 80px; /* Control width */
+    height: calc(1.5em + 0.75rem + 2px); /* Match Bootstrap input height */
+  }
+}
+
+/* Container for the pagination navigation */
+.pagination-nav-container {
+  flex-shrink: 0; /* Prevent the pagination from shrinking */
+}
+
+/* Bootstrap Pagination Styles */
+.pagination {
+  .page-link {
+    color: #0d6efd; /* Primary color for links */
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    cursor: pointer; /* Indicate clickable */
+
+    &:hover {
+      z-index: 2;
+      color: #004085;
+      background-color: #e9ecef;
+      border-color: #dee2e6;
+    }
+  }
+  .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+  }
+}
+
+.results-info {
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+/* Footer Styling - Consistent with spare-items */
+.footer {
+  border-top: 1px solid #dee2e6; /* Top border for footer */
+  background-color: #f8f9fa; /* Match header background */
+  color: #6c757d; /* Muted text color */
+  font-size: 0.9rem;
+  padding: 1rem; /* Adjusted padding */
+}

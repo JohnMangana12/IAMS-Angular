@@ -1,0 +1,36 @@
+/* Add some styling for the modal title to center it */
+.modal-title {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  /* This margin-left is a bit of a hack. A better way might be to use Flexbox on the modal-header. */
+  margin-left: 290px; /* Adjust as needed based on your modal's overall width */
+  flex-grow: 1; /* Allow title to take available space if using flex */
+}
+
+/* Optional: Add some general styling for modal body for better readability */
+.modal-body {
+  padding: 1.5rem; /* More padding inside the body */
+  font-size: 1rem; /* Slightly larger font for readability */
+}
+
+.modal-body p {
+  margin-bottom: 0.75rem; /* Spacing between paragraphs */
+}
+
+.modal-body p:last-child {
+  margin-bottom: 0; /* No bottom margin for the last paragraph */
+}
+
+/* You might want to style the footer too */
+.modal-footer {
+  padding: 1rem;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+/* Ensure Bootstrap's close button styling is applied or provide your own */
+.btn-close {
+  /* For Bootstrap 5, this class is standard. */
+  /* If you are not using Bootstrap or have custom styles, you might need: */
+   background-color: transparent; border: 0;
+}
