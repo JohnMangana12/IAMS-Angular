@@ -8,14 +8,15 @@ import { Asset } from '../models/asset.model'; // Assuming you have this
 })
 export class AssetService {
    private apiUrl = 'http://localhost:3000/assets';
+   private licensesUrl = 'http://localhost:3000/licenses';
 
   constructor(private http: HttpClient) { }
 
   getAssetList(
     groupAssetCategory?: string,
     checkoutTo?: string | null,
-    scrumTeam?: string | null, // Added scrumTeam filter
-    agileReleaseTrain?: string | null, // Added agileReleaseTrain filter
+    scrumTeam?: string | null,
+    agileReleaseTrain?: string | null,
     assetCondition?: string,
   ): Observable<Asset[]> {
     let params = new HttpParams();
@@ -26,19 +27,15 @@ export class AssetService {
     if (checkoutTo !== undefined && checkoutTo !== null) {
       params = params.set('CheckoutTo', checkoutTo);
     }
-    // Add ScrumTeam filter if provided
     if (scrumTeam !== undefined && scrumTeam !== null) {
       params = params.set('ScrumTeam', scrumTeam);
     }
-    // Add AgileReleaseTrain filter if provided
     if (agileReleaseTrain !== undefined && agileReleaseTrain !== null) {
       params = params.set('AgileReleaseTrain', agileReleaseTrain);
     }
-    // Add AssetCondition and display it on third-party-items component
     if (assetCondition) {
       params = params.set('AssetCondition', assetCondition);
     }
-
 
     return this.http.get<Asset[]>(this.apiUrl, { params: params });
   }
@@ -57,5 +54,41 @@ export class AssetService {
 
   deleteAssetList(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // ==========================================================
+  // NEW LICENSE METHODS (Use these in your LicensesComponent)
+  // ==========================================================
+
+  /**
+   * Fetch data from the new 'licenses' table
+   */
+  getLicenses(licenseType?: string): Observable<any[]> {
+    let params = new HttpParams();
+    if (licenseType && licenseType !== 'All') {
+      params = params.set('license_type', licenseType);
+    }
+    return this.http.get<any[]>(this.licensesUrl, { params });
+  }
+
+  /**
+   * Add a new row to the 'licenses' table
+   */
+  addLicense(data: any): Observable<any> {
+    return this.http.post(this.licensesUrl, data);
+  }
+
+  /**
+   * Update a specific row in 'licenses' table
+   */
+  updateLicense(id: number, data: any): Observable<any> {
+    return this.http.put<any>(`${this.licensesUrl}/${id}`, data);
+  }
+
+  /**
+   * Delete a row from 'licenses' table
+   */
+  deleteLicense(id: number): Observable<any> {
+    return this.http.delete(`${this.licensesUrl}/${id}`);
   }
 }

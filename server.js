@@ -685,7 +685,107 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// ==========================================
+// LICENSE MANAGEMENT ROUTES
+// ==========================================
 
+// 1. GET ALL LICENSES (with optional type filter)
+app.get('/licenses', async (req, res) => {
+    try {
+        const { license_type } = req.query;
+        let query = 'SELECT * FROM licenses';
+        let values = [];
+
+        // Filter by type if provided (e.g., Subscription, Perpetual)
+        if (license_type && license_type !== 'All') {
+            query += ' WHERE license_type = $1';
+            values.push(license_type);
+        }
+
+        query += ' ORDER BY id DESC'; // Show newest first
+
+        const result = await pool.query(query, values);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching licenses:', err.message);
+        res.status(500).json({ error: 'Server Error fetching licenses' });
+    }
+});
+
+// 2. CREATE NEW LICENSE (POST)
+app.post('/licenses', async (req, res) => {
+    try {
+        const {
+            product_name,
+            license_key,
+            license_type,
+            serial_number,
+            cost_center,
+            vendor,
+            contract_date
+        } = req.body;
+
+        const newLicense = await pool.query(
+            `INSERT INTO licenses
+            (product_name, license_key, license_type, serial_number, cost_center, vendor, contract_date)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *`,
+            [product_name, license_key, license_type, serial_number, cost_center, vendor, contract_date]
+        );
+
+        res.status(201).json(newLicense.rows[0]);
+    } catch (err) {
+        console.error('Error creating license:', err.message);
+        res.status(500).json({ error: 'Server Error creating license' });
+    }
+});
+
+// 3. UPDATE LICENSE (PUT)
+app.put('/licenses/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            product_name,
+            license_key,
+            license_type,
+            serial_number,
+            cost_center,
+            vendor,
+            contract_date
+        } = req.body;
+
+        const updateLicense = await pool.query(
+            `UPDATE licenses
+            SET product_name = $1,
+                license_key = $2,
+                license_type = $3,
+                serial_number = $4,
+                cost_center = $5,
+                vendor = $6,
+                contract_date = $7,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $8`,
+            [product_name, license_key, license_type, serial_number, cost_center, vendor, contract_date, id]
+        );
+
+        res.json({ message: 'License updated successfully' });
+    } catch (err) {
+        console.error('Error updating license:', err.message);
+        res.status(500).json({ error: 'Server Error updating license' });
+    }
+});
+
+// 4. DELETE LICENSE
+app.delete('/licenses/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM licenses WHERE id = $1', [id]);
+        res.json({ message: 'License deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting license:', err.message);
+        res.status(500).json({ error: 'Server Error deleting license' });
+    }
+});
 
 
 

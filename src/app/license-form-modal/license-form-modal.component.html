@@ -1,0 +1,96 @@
+<div class="modal-header bg-primary text-white">
+  <h4 class="modal-title">
+    <fa-icon [icon]="isEditMode ? faFileSignature : faTag" class="me-2"></fa-icon>
+    {{ isEditMode ? 'Edit License' : 'Add New License' }}
+  </h4>
+  <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="licenseForm" (ngSubmit)="onSubmit()">
+
+    <!-- Row 1: Product Name & Type -->
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label for="product_name" class="form-label fw-bold">Product Name <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text"><fa-icon [icon]="faTag"></fa-icon></span>
+          <input type="text" class="form-control" id="product_name" formControlName="product_name" placeholder="e.g. Adobe Acrobat Pro">
+        </div>
+        <div *ngIf="licenseForm.get('product_name')?.invalid && licenseForm.get('product_name')?.touched" class="text-danger small mt-1">
+          Product Name is required.
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="license_type" class="form-label fw-bold">Type <span class="text-danger">*</span></label>
+        <select class="form-select" id="license_type" formControlName="license_type">
+          <option value="Subscription">Subscription</option>
+          <option value="Perpetual">Perpetual</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="SaaS">SaaS</option>
+          <option value="OEM">OEM</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: License Key -->
+    <div class="mb-3">
+      <label for="license_key" class="form-label fw-bold">License Key <span class="text-danger">*</span></label>
+      <div class="input-group">
+        <span class="input-group-text"><fa-icon [icon]="faKey"></fa-icon></span>
+        <textarea class="form-control" id="license_key" formControlName="license_key" rows="2" placeholder="Enter key here..."></textarea>
+      </div>
+      <div *ngIf="licenseForm.get('license_key')?.invalid && licenseForm.get('license_key')?.touched" class="text-danger small mt-1">
+        License Key is required.
+      </div>
+    </div>
+
+    <!-- Row 3: Serial & Cost Center -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="serial_number" class="form-label fw-bold">Serial Number</label>
+        <input type="text" class="form-control" id="serial_number" formControlName="serial_number">
+      </div>
+      <div class="col-md-6">
+        <label for="cost_center" class="form-label fw-bold">Cost Center</label>
+        <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faBuilding"></fa-icon></span>
+            <input type="text" class="form-control" id="cost_center" formControlName="cost_center">
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Vendor & Date -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="vendor" class="form-label fw-bold">Vendor <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="vendor" formControlName="vendor" placeholder="e.g. Microsoft">
+        <div *ngIf="licenseForm.get('vendor')?.invalid && licenseForm.get('vendor')?.touched" class="text-danger small mt-1">
+            Vendor is required.
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="contract_date" class="form-label fw-bold">Contract Date <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text"><fa-icon [icon]="faCalendar"></fa-icon></span>
+          <input type="date" class="form-control" id="contract_date" formControlName="contract_date">
+        </div>
+        <div *ngIf="licenseForm.get('contract_date')?.invalid && licenseForm.get('contract_date')?.touched" class="text-danger small mt-1">
+            Date is required.
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary" (click)="activeModal.dismiss('cancel')">
+    <fa-icon [icon]="faTimes"></fa-icon> Cancel
+  </button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="isLoading || licenseForm.invalid">
+    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+    <fa-icon [icon]="faSave" *ngIf="!isLoading"></fa-icon>
+    {{ isEditMode ? 'Update License' : 'Save License' }}
+  </button>
+</div>

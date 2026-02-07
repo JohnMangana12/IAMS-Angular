@@ -64,6 +64,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {WarrantyMonitoringUsersComponent} from "./warranty-monitoring-users/warranty-monitoring-users.component";
 import  {DashboardWarrantyComponent} from "./dashboard-warranty/dashboard-warranty.component";
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { LicenseFormModalComponent } from './license-form-modal/license-form-modal.component';
+import { LicenseDetailsModalComponent } from './license-details-modal/license-details-modal.component';
 
 
 
@@ -120,6 +122,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     WarrantyMonitoringComponent,
     WarrantyMonitoringUsersComponent,
     ChangePasswordComponent,
+    LicenseFormModalComponent,
+    LicenseDetailsModalComponent,
 
 
 

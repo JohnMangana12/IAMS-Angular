@@ -1,0 +1,52 @@
+<div class="modal-header bg-info text-white">
+    <h4 class="modal-title">
+      <fa-icon [icon]="faDriversLicense" class="me-2"></fa-icon>
+      License Details
+    </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body p-4" *ngIf="license">
+    <div class="row mb-3">
+        <div class="col-md-12 text-center">
+            <h2 class="text-primary mb-1">{{ license.product_name }}</h2>
+            <span class="badge bg-secondary fs-6">{{ license.license_type }}</span>
+        </div>
+    </div>
+    <hr>
+
+    <div class="row g-3">
+        <div class="col-md-12">
+            <label class="text-muted small fw-bold text-uppercase">License Key</label>
+            <div class="p-3 bg-light border rounded text-break font-monospace">
+                {{ license.license_key }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="text-muted small fw-bold text-uppercase">Serial Number</label>
+            <p class="fs-5">{{ license.serial_number || 'N/A' }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <label class="text-muted small fw-bold text-uppercase">Vendor</label>
+            <p class="fs-5">{{ license.vendor }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <label class="text-muted small fw-bold text-uppercase">Cost Center</label>
+            <p class="fs-5">{{ license.cost_center || 'N/A' }}</p>
+        </div>
+
+        <div class="col-md-6">
+            <label class="text-muted small fw-bold text-uppercase">Contract Date</label>
+            <p class="fs-5">{{ license.contract_date | date:'mediumDate' }}</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.close()">
+      <fa-icon [icon]="faTimes"></fa-icon> Close
+    </button>
+  </div>
