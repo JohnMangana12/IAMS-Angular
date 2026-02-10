@@ -1,37 +1,94 @@
-.content {
-  padding-top: 10px;
-}
+// asset-edit-modal.component.scss
 
-.blue-button {
-  background-color: blue;
+// 1. Header Styling (Using an Indigo/Purple gradient to distinguish 'Edit')
+.modal-header {
+  background: linear-gradient(135deg, #6610f2 0%, #520dc2 100%);
   color: white;
-}
+  border-bottom: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1.5rem;
 
-.row {
-  display: flex;
-
-  gap: 5px;
-
-
-
-  .form-group {  // Use .form-group for Bootstrap forms
-    width: 100%;
-
+  .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    &:hover { opacity: 1; }
   }
 }
 
+// 2. Section Dividers
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6f42c1; // Matching purple theme
+  font-weight: 700;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 5px;
+}
+
+// 3. Modern Input Groups
+.input-group {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  .input-group-text {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-right: none;
+    color: #6c757d;
+    min-width: 45px;
+    justify-content: center;
+  }
+
+  .form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-left: none;
+    padding-left: 0.5rem;
+    &:focus {
+      box-shadow: none;
+      border-color: #ced4da;
+    }
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(102, 16, 242, 0.15); // Purple glow
+    .input-group-text, .form-control, .form-select {
+      border-color: #9ec5fe;
+      color: #6610f2;
+    }
+  }
+}
+
+// 4. Datepicker Button
+.input-group button.btn-outline-secondary {
+  border-left: none;
+  border-color: #ced4da;
+  &:hover {
+    background-color: #f3f0ff;
+    color: #6610f2;
+  }
+}
+
+// 5. Labels & General
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.2rem;
+}
+
 .modal-footer {
-  display: flex;
-  justify-content: space-between;
-}
-.form-control, .form-select {
-  border-radius:0.75rem; /* Example: Adjust the border radius */
-  font-size: 1rem;       /* Example: Adjust the font size */
-  /* Add any other consistent styling here */
-}
-.modal-title {  // Your new class
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 30px;
-  font-weight: bold;
-  margin-left: 210px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
+
+  .btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
 }

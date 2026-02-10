@@ -1,42 +1,64 @@
-import { Component, Input, OnInit } from '@angular/core'; // Import Input and OnInit
+import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Asset } from '../services/search.service';
+import {
+  faInfoCircle, faTag, faBarcode, faMicrochip, faLayerGroup,
+  faLaptop, faMapMarkerAlt, faUser, faBuilding, faUsers,
+  faTrain, faFileInvoice, faCalendarCheck, faShieldAlt,
+  faExclamationTriangle
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-asset-details', // Used by NgbModal to create the component
-  // If your app is fully standalone, set this to true. Otherwise, ensure it's declared in an NgModule.
-  // standalone: true,
-  standalone: false, // Keep false if declared in an NgModule
+  selector: 'app-asset-details',
+  standalone: false,
   templateUrl: './asset-details.component.html',
-  styleUrls: ['./asset-details.component.scss'] // Use styleUrls for an array
+  styleUrls: ['./asset-details.component.scss']
 })
-export class AssetDetailsComponent implements OnInit { // Implement OnInit
+export class AssetDetailsComponent implements OnInit {
 
-  // The @Input() decorator is essential for receiving data from the parent component
-  // (in this case, HeaderComponent, via modalService.open).
-  // Using the specific 'Asset' type for strong typing. The '!' asserts it will be defined.
   @Input() asset!: Asset;
 
-  constructor(
-    public activeModal: NgbActiveModal // Inject NgbActiveModal to control the modal instance
-  ) {}
+  // Icons
+  faInfoCircle = faInfoCircle;
+  faTag = faTag;
+  faBarcode = faBarcode;
+  faMicrochip = faMicrochip;
+  faLayerGroup = faLayerGroup;
+  faLaptop = faLaptop;
+  faMapMarkerAlt = faMapMarkerAlt;
+  faUser = faUser;
+  faBuilding = faBuilding;
+  faUsers = faUsers;
+  faTrain = faTrain;
+  faFileInvoice = faFileInvoice;
+  faCalendarCheck = faCalendarCheck;
+  faShieldAlt = faShieldAlt;
+  faExclamationTriangle = faExclamationTriangle;
+
+  constructor(public activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
-    // This method is called after the component's inputs have been initialized.
-    // It's a good place to check if the asset data was actually received.
     if (!this.asset) {
       console.error('Asset details component initialized without an asset!');
-      // Optionally, you can dismiss the modal if asset data is mandatory.
-      // this.activeModal.dismiss('Asset data missing');
     }
-    // console.log('Asset received in details component:', this.asset); // For debugging
   }
 
-  /**
-   * Closes the modal.
-   * This method can be called from the template.
-   */
   closeModal(): void {
-    this.activeModal.dismiss('User clicked close'); // 'dismiss' is commonly used for closing modal actions.
+    this.activeModal.dismiss('User clicked close');
+  }
+
+    // Helper to visually flag expired warranties
+  // Update the parameter type to accept string OR Date
+  isWarrantyExpired(val?: string | Date): boolean {
+    if (!val) return false;
+
+    // The Date constructor works with both date strings and Date objects
+    const warranty = new Date(val);
+    const today = new Date();
+
+    // Check if the date is valid before comparing
+    if (isNaN(warranty.getTime())) return false;
+
+    return warranty < today;
   }
 }

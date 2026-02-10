@@ -1,100 +1,178 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="modal-title">Update Asset Record</h4>
+<!-- asset-edit-modal.component.html -->
+<div class="modal-content border-0 shadow-lg">
 
-</div>
-<div class="modal-body">
-  <form [formGroup]="assetAddForm" (ngSubmit)="onFormSubmit()">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-5 mb-3">
-          <label for="AssetTag" class="form-label">PSS Asset Tag</label>
-          <input type="text" class="form-control" id="AssetTag" formControlName="AssetTag">
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 mb-3">
-          <label for="Description" class="form-label">Description</label>
-          <input type="text" class="form-control" id="Description" formControlName="Description">
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="Location" class="form-label">Location</label>
-          <input type="text" class="form-control" id="Location" formControlName="Location">
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 mb-3">
-          <label for="SerialNumber" class="form-label">Serial Number</label>
-          <input type="text" class="form-control" id="SerialNumber" formControlName="SerialNumber">
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="AssetCondition" class="form-label">Asset Condition</label>
-          <select class="form-select" id="AssetCondition" formControlName="AssetCondition">
-            <option *ngFor="let val of condition" [value]="val">{{val}}</option>  <!--Corrected Interpolate the value -->
-          </select>
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 mb-3">
-          <label for="Specification" class="form-label">Specification</label>
-          <input type="text" class="form-control" id="Specification" formControlName="Specification">
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="GroupAssetCategory" class="form-label">Group Asset Category</label>
-          <select class="form-select" id="GroupAssetCategory" formControlName="GroupAssetCategory">
-            <option *ngFor="let val of GroupCategory" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
-          </select>
-        </div>
-        <div class="col-12 col-sm-6 col-md-6 mb-3">
-          <label for="PoNumber" class="form-label">PO Number Reference</label>
-          <input type="text" class="form-control" id="PoNumber" formControlName="PoNumber">
-        </div>
-         <div class="col-md-5 mb-3">
-          <label for="Warranty" class="form-label">Warranty Expires</label>
+  <!-- Header -->
+  <div class="modal-header">
+    <h4 class="modal-title d-flex align-items-center">
+      <div class="bg-white bg-opacity-25 p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <fa-icon [icon]="faEdit"></fa-icon>
+      </div>
+      <div>
+        <span class="d-block">Update Asset Record</span>
+        <small class="d-block fw-light fs-6 opacity-75">Modify asset details below</small>
+      </div>
+    </h4>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body p-4">
+    <form [formGroup]="assetAddForm" (ngSubmit)="onFormSubmit()">
+
+      <!-- SECTION 1: IDENTIFICATION -->
+      <div class="section-title">Identification</div>
+      <div class="row g-3 mb-2">
+        <div class="col-md-6">
+          <label class="form-label">PSS Asset Tag</label>
           <div class="input-group">
-            <input class="form-control" placeholder="yyyy-mm-dd"
-                   name="dp" formControlName="Warranty" ngbDatepicker #d_warranty="ngbDatepicker">
-                   <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d_warranty.toggle()" type="button">
-                    <span class="visually-hidden">Open datepicker</span>
-                  </button>
+            <span class="input-group-text"><fa-icon [icon]="faTag"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="AssetTag" placeholder="Tag ID">
           </div>
         </div>
-           <div class="col-md-5 mb-3">
-          <label for="DateAcquired" class="form-label">Date Acquired</label>
+        <div class="col-md-6">
+          <label class="form-label">Serial Number</label>
           <div class="input-group">
-            <input class="form-control" placeholder="yyyy-mm-dd"
-                   name="dp" formControlName="DateAcquired" ngbDatepicker #d_dateAcquired="ngbDatepicker">
-                   <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d_dateAcquired.toggle()" type="button">
-                    <span class="visually-hidden">Open datepicker</span>
-                  </button>
+            <span class="input-group-text"><fa-icon [icon]="faBarcode"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="SerialNumber" placeholder="Serial No.">
           </div>
         </div>
-        <div class="col-md-5 mb-3">
-          <label for="CheckoutTo" class="form-label">Checkout To</label>
-          <input type="text" class="form-control" id="CheckoutTo" formControlName="CheckoutTo">
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="AssetCategory" class="form-label">Asset Category</label>
-          <select class="form-select" id="AssetCategory" formControlName="AssetCategory">
-            <option *ngFor="let val of Category" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
-          </select>
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="CostCenter" class="form-label">Cost Center</label>
-          <select class="form-select" id="CostCenter" formControlName="CostCenter">
-            <option *ngFor="let val of CostCenter" [value]="val">{{val}}</option>  <!-- Corrected Interpolate the value -->
-          </select>
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="ScrumTeam" class="form-label">Scrum Team</label>
-          <select class="form-select" id="ScrumTeam" formControlName="ScrumTeam">
-            <option *ngFor="let val of ScrumTeam" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
-          </select>
-        </div>
-        <div class="col-md-5 mb-3">
-          <label for="AgileReleaseTrain" class="form-label">Release Train</label>
-          <select class="form-select" id="AgileReleaseTrain" formControlName="AgileReleaseTrain">
-            <option *ngFor="let val of AgileReleaseTrain" [value]="val">{{val}}</option> <!-- Corrected Interpolate the value -->
-          </select>
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faAlignLeft"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="Description">
+          </div>
         </div>
       </div>
-    </div>
-  </form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-  <button type="submit" class="btn btn-primary" (click)="onFormSubmit()">Save changes</button>
+
+      <!-- SECTION 2: SPECS -->
+      <div class="section-title">Technical Specification</div>
+      <div class="row g-3 mb-2">
+        <div class="col-md-6">
+          <label class="form-label">Group Category</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faLayerGroup"></fa-icon></span>
+            <select class="form-select" formControlName="GroupAssetCategory">
+              <option *ngFor="let val of GroupCategory" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Asset Category</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faLaptop"></fa-icon></span>
+            <select class="form-select" formControlName="AssetCategory">
+              <option *ngFor="let val of Category" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Specification</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faMicrochip"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="Specification">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Condition</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faHeartbeat"></fa-icon></span>
+            <select class="form-select" formControlName="AssetCondition">
+              <option *ngFor="let val of condition" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: LOCATION -->
+      <div class="section-title">Location & Assignment</div>
+      <div class="row g-3 mb-2">
+        <div class="col-md-6">
+          <label class="form-label">Location</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faMapMarkerAlt"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="Location">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Checkout To</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faUser"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="CheckoutTo">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Cost Center</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faBuilding"></fa-icon></span>
+            <select class="form-select" formControlName="CostCenter">
+              <option *ngFor="let val of CostCenter" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Scrum Team</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faUsers"></fa-icon></span>
+            <select class="form-select" formControlName="ScrumTeam">
+              <option *ngFor="let val of ScrumTeam" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Release Train</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faTrain"></fa-icon></span>
+            <select class="form-select" formControlName="AgileReleaseTrain">
+              <option *ngFor="let val of AgileReleaseTrain" [value]="val">{{val}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: PURCHASE -->
+      <div class="section-title">Purchase & Dates</div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">PO Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faFileInvoice"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="PoNumber">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Date Acquired</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faCalendarAlt"></fa-icon></span>
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   formControlName="DateAcquired" ngbDatepicker #d_acquired="ngbDatepicker" (click)="d_acquired.toggle()">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Warranty Expires</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faShieldAlt"></fa-icon></span>
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   formControlName="Warranty" ngbDatepicker #d_warranty="ngbDatepicker" (click)="d_warranty.toggle()">
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light text-secondary border" (click)="activeModal.dismiss()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" style="background-color: #6610f2; border-color: #6610f2;"
+            (click)="onFormSubmit()" [disabled]="isLoading || assetAddForm.invalid">
+      <ng-container *ngIf="isLoading; else saveIcon">
+        <span class="spinner-border spinner-border-sm me-2"></span> Updating...
+      </ng-container>
+      <ng-template #saveIcon>
+        <fa-icon [icon]="faSave" class="me-2"></fa-icon> Save Changes
+      </ng-template>
+    </button>
+  </div>
+
 </div>

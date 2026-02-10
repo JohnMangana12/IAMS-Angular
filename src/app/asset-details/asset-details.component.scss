@@ -1,36 +1,99 @@
-/* Add some styling for the modal title to center it */
-.modal-title {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 30px;
-  font-weight: bold;
-  /* This margin-left is a bit of a hack. A better way might be to use Flexbox on the modal-header. */
-  margin-left: 290px; /* Adjust as needed based on your modal's overall width */
-  flex-grow: 1; /* Allow title to take available space if using flex */
+// asset-details.component.scss
+
+// 1. Header (Teal/Cyan Gradient for "View" mode)
+.modal-header {
+  background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+  color: white;
+  border-bottom: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1.5rem;
+
+  .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    &:hover { opacity: 1; }
+  }
 }
 
-/* Optional: Add some general styling for modal body for better readability */
-.modal-body {
-  padding: 1.5rem; /* More padding inside the body */
-  font-size: 1rem; /* Slightly larger font for readability */
+// 2. Hero Section (Asset Tag)
+.hero-section {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  text-align: center;
+  padding: 2rem 1rem;
+
+  .asset-tag-badge {
+    background-color: white;
+    border: 2px solid #0dcaf0;
+    color: #0dcaf0;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
 }
 
-.modal-body p {
-  margin-bottom: 0.75rem; /* Spacing between paragraphs */
+// 3. Data Typography
+.label-text {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #6c757d; // Muted gray
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: block;
 }
 
-.modal-body p:last-child {
-  margin-bottom: 0; /* No bottom margin for the last paragraph */
+.value-text {
+  font-size: 1.1rem;
+  color: #212529; // Dark text
+  font-weight: 500;
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
-/* You might want to style the footer too */
+// 4. Icons
+fa-icon {
+  width: 20px;
+  text-align: center;
+  color: #adb5bd; // Light gray icon by default
+}
+
+// 5. Grid Item Wrapper
+.detail-item {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+
+  .icon-wrapper {
+    margin-right: 12px;
+    margin-top: 2px;
+  }
+}
+
+// 6. Footer
 .modal-footer {
-  padding: 1rem;
-  justify-content: flex-end; /* Align buttons to the right */
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
+
+  .btn {
+    padding: 0.5rem 2rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
 }
 
-/* Ensure Bootstrap's close button styling is applied or provide your own */
-.btn-close {
-  /* For Bootstrap 5, this class is standard. */
-  /* If you are not using Bootstrap or have custom styles, you might need: */
-   background-color: transparent; border: 0;
+// 7. Status Badge for Condition
+.badge-soft {
+  background-color: rgba(13, 202, 240, 0.15);
+  color: #0988a2;
+  padding: 0.35em 0.8em;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  font-weight: 600;
 }

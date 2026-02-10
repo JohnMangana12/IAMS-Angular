@@ -1,35 +1,161 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="modal-title">Asset Details</h4>
-  <!-- Add a close button for the modal header as well -->
+<!-- asset-details.component.html -->
+<div class="modal-content border-0 shadow-lg">
 
-</div>
-<div class="modal-body">
-  <!-- Use *ngIf to safely display asset properties only if 'asset' is defined -->
-  <div *ngIf="asset; else noAssetFound">
-    <p><strong>Asset Tag:</strong> {{ asset.AssetTag }}</p>
-    <p><strong>Description:</strong> {{ asset.Description }}</p>
-    <p><strong>Serial Number:</strong> {{ asset.SerialNumber }}</p>
-    <p><strong>Location:</strong> {{ asset.Location }}</p>
-    <p><strong>Asset Condition:</strong> {{ asset.AssetCondition }}</p>
-    <p><strong>Specification:</strong> {{ asset.Specification }}</p>
-    <p><strong>Group Asset Category:</strong> {{ asset.GroupAssetCategory }}</p>
-    <p><strong>PO Number Reference:</strong> {{ asset.PoNumber }}</p>
-    <!-- Using date pipe for better display of dates -->
-    <p><strong>Warranty Expires:</strong> {{ asset.Warranty | date:'mediumDate' }}</p>
-    <p><strong>Date Acquired:</strong> {{ asset.DateAcquired | date:'mediumDate' }}</p>
-    <p><strong>Checkout To:</strong> {{ asset.CheckoutTo }}</p>
-    <p><strong>Asset Category:</strong> {{ asset.AssetCategory }}</p>
-    <p><strong>Cost Center:</strong> {{ asset.CostCenter }}</p>
-    <p><strong>Scrum Team:</strong> {{ asset.ScrumTeam }}</p>
-    <p><strong>Release Train:</strong> {{ asset.AgileReleaseTrain }}</p>
-    <!-- Add any other relevant fields from your Asset interface -->
+  <!-- Header -->
+  <div class="modal-header">
+    <h4 class="modal-title d-flex align-items-center">
+      <div class="bg-white bg-opacity-25 p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <fa-icon [icon]="faInfoCircle" [style.color]="'white'"></fa-icon>
+      </div>
+      <div>
+        <span class="d-block">Asset Details</span>
+        <small class="d-block fw-light fs-6 opacity-75">View complete asset record</small>
+      </div>
+    </h4>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeModal()"></button>
   </div>
-  <!-- This ng-template is displayed if 'asset' is null or undefined -->
+
+  <div class="modal-body p-0" *ngIf="asset; else noAssetFound">
+
+    <!-- Hero Section: Asset Tag -->
+    <div class="hero-section">
+      <span class="d-block text-muted small text-uppercase fw-bold mb-2">PSS Asset Tag</span>
+      <span class="asset-tag-badge">
+        <fa-icon [icon]="faTag" class="me-2"></fa-icon>
+        {{ asset.AssetTag }}
+      </span>
+      <h5 class="mt-3 text-dark fw-bold">{{ asset.Description }}</h5>
+      <div class="mt-2">
+         <span class="badge-soft">{{ asset.AssetCondition }}</span>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="p-4">
+      <div class="row">
+
+        <!-- SECTION 1: Technical -->
+        <div class="col-12 mb-2"><h6 class="text-primary border-bottom pb-2">Technical Specifications</h6></div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faBarcode"></fa-icon></div>
+          <div>
+            <span class="label-text">Serial Number</span>
+            <div class="value-text font-monospace">{{ asset.SerialNumber || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faMicrochip"></fa-icon></div>
+          <div>
+            <span class="label-text">Specification</span>
+            <div class="value-text">{{ asset.Specification || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faLayerGroup"></fa-icon></div>
+          <div>
+            <span class="label-text">Group Category</span>
+            <div class="value-text">{{ asset.GroupAssetCategory }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faLaptop"></fa-icon></div>
+          <div>
+            <span class="label-text">Asset Category</span>
+            <div class="value-text">{{ asset.AssetCategory }}</div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Assignment -->
+        <div class="col-12 mb-2 mt-2"><h6 class="text-primary border-bottom pb-2">Location & Assignment</h6></div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faMapMarkerAlt"></fa-icon></div>
+          <div>
+            <span class="label-text">Location</span>
+            <div class="value-text">{{ asset.Location }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faUser"></fa-icon></div>
+          <div>
+            <span class="label-text">Checkout To</span>
+            <div class="value-text">{{ asset.CheckoutTo || 'Unassigned' }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faBuilding"></fa-icon></div>
+          <div>
+            <span class="label-text">Cost Center</span>
+            <div class="value-text small">{{ asset.CostCenter }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faUsers"></fa-icon></div>
+          <div>
+            <span class="label-text">Scrum Team</span>
+            <div class="value-text small">{{ asset.ScrumTeam }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faTrain"></fa-icon></div>
+          <div>
+            <span class="label-text">Release Train</span>
+            <div class="value-text small">{{ asset.AgileReleaseTrain }}</div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Purchase & Warranty -->
+        <div class="col-12 mb-2 mt-2"><h6 class="text-primary border-bottom pb-2">Purchase Information</h6></div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faFileInvoice"></fa-icon></div>
+          <div>
+            <span class="label-text">PO Number</span>
+            <div class="value-text">{{ asset.PoNumber || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faCalendarCheck"></fa-icon></div>
+          <div>
+            <span class="label-text">Date Acquired</span>
+            <div class="value-text">{{ asset.DateAcquired | date:'mediumDate' }}</div>
+          </div>
+        </div>
+
+        <div class="col-md-4 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faShieldAlt"></fa-icon></div>
+          <div>
+            <span class="label-text">Warranty Expires</span>
+            <div class="value-text" [class.text-danger]="isWarrantyExpired(asset.Warranty)">
+              {{ asset.Warranty | date:'mediumDate' }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <ng-template #noAssetFound>
-    <p>Asset details could not be loaded.</p>
+    <div class="modal-body p-5 text-center text-muted">
+      <fa-icon [icon]="faExclamationTriangle" size="3x" class="mb-3 d-block"></fa-icon>
+      <h4>Asset Not Found</h4>
+      <p>The details for this asset could not be loaded.</p>
+    </div>
   </ng-template>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-  <!-- You could add "Edit" or "Delete" buttons here, which would typically involve emitting an event -->
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary border-0" (click)="closeModal()">
+      Close
+    </button>
+  </div>
 </div>

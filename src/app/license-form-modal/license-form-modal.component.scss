@@ -1,0 +1,111 @@
+// license-form-modal.component.scss
+
+// 1. Modal Header Styling
+.modal-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); // Gradient primary
+  color: white;
+  border-bottom: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1.5rem;
+
+  .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    &:hover { opacity: 1; }
+  }
+}
+
+// 2. Modern "Seamless" Input Groups
+// This makes the icon and input look like one contained unit
+.input-group {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  .input-group-text {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-right: none; // Remove border between icon and input
+    color: #6c757d;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+
+  .form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-left: none; // Remove border between icon and input
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding-left: 0.5rem;
+
+    &:focus {
+      box-shadow: none; // Remove default blue glow
+      border-color: #ced4da;
+    }
+  }
+
+  // Effect when the user clicks inside
+  &:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    .input-group-text, .form-control, .form-select {
+      border-color: #86b7fe;
+      color: #0d6efd; // Highlight icon color
+    }
+  }
+}
+
+// 3. Specific Field Styling
+textarea#license_key, input#serial_number {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+
+// 4. Labels
+.form-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  margin-bottom: 0.4rem;
+}
+
+// 5. Validation Messages
+.text-danger.small {
+  animation: fadeIn 0.3s ease-in;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+// 6. Footer & Buttons
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1.2rem;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+
+  .btn {
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

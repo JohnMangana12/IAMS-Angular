@@ -194,7 +194,7 @@ export class LicensesComponent implements OnInit {
 
  // REPLACED: openAssetDetailsModal
   openAssetDetailsModal(row: any) {
-    const modalRef = this.modalService.open(LicenseDetailsModalComponent, { size: 'md', centered: true });
+    const modalRef = this.modalService.open(LicenseDetailsModalComponent, { size: 'lg', centered: true });
     modalRef.componentInstance.license = row; // Passing 'license' input
   }
 

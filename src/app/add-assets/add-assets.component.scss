@@ -1,35 +1,96 @@
-.content {
-  padding-top: 10px;
-}
+// add-assets.component.scss
 
-.blue-button {
-  background-color: blue;
+// 1. Header Styling
+.modal-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%); // Deep Blue
   color: white;
-}
+  border-bottom: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1.5rem;
 
-.row {
-  display: flex;
-  gap: 5px;
-
-  .form-group {
-    width: 100%;
+  .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    &:hover { opacity: 1; }
   }
 }
 
+// 2. Section Headers
+.section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #adb5bd; // Light gray for subdivision text
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 5px;
+}
+
+// 3. Modern Input Groups
+.input-group {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+
+  .input-group-text {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-right: none;
+    color: #6c757d;
+    min-width: 45px; // Ensure icons align neatly
+    justify-content: center;
+  }
+
+  .form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-left: none;
+    padding-left: 0.5rem;
+    &:focus {
+      box-shadow: none;
+      border-color: #ced4da;
+    }
+  }
+
+  // Focus effect
+  &:focus-within {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    .input-group-text, .form-control, .form-select {
+      border-color: #86b7fe;
+      color: #0d6efd;
+    }
+  }
+}
+
+// 4. Datepicker Specific
+.input-group button.btn-outline-secondary {
+  border-left: none;
+  border-color: #ced4da;
+  &:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+  }
+}
+
+// 5. Labels
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.2rem;
+}
+
+// 6. Footer
 .modal-footer {
-  display: flex;
-  justify-content: space-between;
-}
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
 
-.form-control, .form-select {
-  border-radius: 0.75rem; /* Example: Adjust the border radius */
-  font-size: 1rem;      /* Example: Adjust the font size */
-  /* Add any other consistent styling here */
-}
-
-.modal-title-custom {  // Your new class
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  font-size: 30px;
-  font-weight: bold;
-  margin-left: 210px;
+  .btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+  }
 }

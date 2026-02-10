@@ -1,52 +1,102 @@
-<div class="modal-header bg-info text-white">
-    <h4 class="modal-title">
-      <fa-icon [icon]="faDriversLicense" class="me-2"></fa-icon>
-      License Details
-    </h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+<!-- license-details-modal.component.html -->
+<div class="modal-content border-0 shadow-lg">
+
+  <!-- Header -->
+  <div class="modal-header">
+    <h5 class="modal-title d-flex align-items-center">
+      <div class="bg-white bg-opacity-25 p-2 rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+        <fa-icon [icon]="faDriversLicense"></fa-icon>
+      </div>
+      <div>
+        <span class="d-block">License Details</span>
+        <small class="d-block fw-light fs-6 opacity-75">View asset information</small>
+      </div>
+    </h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
   </div>
 
-  <div class="modal-body p-4" *ngIf="license">
-    <div class="row mb-3">
-        <div class="col-md-12 text-center">
-            <h2 class="text-primary mb-1">{{ license.product_name }}</h2>
-            <span class="badge bg-secondary fs-6">{{ license.license_type }}</span>
-        </div>
-    </div>
-    <hr>
+  <div class="modal-body p-0" *ngIf="license">
 
-    <div class="row g-3">
-        <div class="col-md-12">
-            <label class="text-muted small fw-bold text-uppercase">License Key</label>
-            <div class="p-3 bg-light border rounded text-break font-monospace">
-                {{ license.license_key }}
+    <!-- Hero Section: Product Name -->
+    <div class="text-center p-4 bg-light border-bottom">
+      <h3 class="fw-bold text-dark mb-2">{{ license.product_name }}</h3>
+      <span class="badge badge-soft text-uppercase">
+        {{ license.license_type }} License
+      </span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="p-4">
+
+      <!-- License Key Section -->
+      <div class="mb-4">
+        <label class="label-text">
+          <fa-icon [icon]="faKey" class="me-1"></fa-icon> License Key
+        </label>
+        <div class="license-key-container d-flex align-items-center justify-content-between p-3">
+          <code class="me-2">{{ license.license_key }}</code>
+          <button class="btn btn-sm btn-copy border-0" (click)="copyToClipboard(license.license_key)" title="Copy to clipboard">
+             <fa-icon [icon]="isCopied ? faCheck : faCopy"></fa-icon>
+             <span *ngIf="isCopied" class="ms-1 small text-success">Copied!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Details Grid -->
+      <div class="row g-4">
+
+        <!-- Serial Number -->
+        <div class="col-md-6">
+          <div class="d-flex align-items-start">
+            <div class="text-muted me-3 mt-1"><fa-icon [icon]="faBarcode" size="lg"></fa-icon></div>
+            <div>
+              <span class="label-text">Serial Number</span>
+              <div class="value-text">{{ license.serial_number || 'N/A' }}</div>
             </div>
+          </div>
         </div>
 
+        <!-- Vendor -->
         <div class="col-md-6">
-            <label class="text-muted small fw-bold text-uppercase">Serial Number</label>
-            <p class="fs-5">{{ license.serial_number || 'N/A' }}</p>
+          <div class="d-flex align-items-start">
+            <div class="text-muted me-3 mt-1"><fa-icon [icon]="faBuilding" size="lg"></fa-icon></div>
+            <div>
+              <span class="label-text">Vendor</span>
+              <div class="value-text">{{ license.vendor }}</div>
+            </div>
+          </div>
         </div>
 
+        <!-- Cost Center -->
         <div class="col-md-6">
-            <label class="text-muted small fw-bold text-uppercase">Vendor</label>
-            <p class="fs-5">{{ license.vendor }}</p>
+          <div class="d-flex align-items-start">
+            <div class="text-muted me-3 mt-1"><fa-icon [icon]="faTag" size="lg"></fa-icon></div>
+            <div>
+              <span class="label-text">Cost Center</span>
+              <div class="value-text">{{ license.cost_center || 'N/A' }}</div>
+            </div>
+          </div>
         </div>
 
+        <!-- Contract Date -->
         <div class="col-md-6">
-            <label class="text-muted small fw-bold text-uppercase">Cost Center</label>
-            <p class="fs-5">{{ license.cost_center || 'N/A' }}</p>
+          <div class="d-flex align-items-start">
+            <div class="text-muted me-3 mt-1"><fa-icon [icon]="faCalendar" size="lg"></fa-icon></div>
+            <div>
+              <span class="label-text">Contract Date</span>
+              <div class="value-text">{{ license.contract_date | date:'mediumDate' }}</div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-md-6">
-            <label class="text-muted small fw-bold text-uppercase">Contract Date</label>
-            <p class="fs-5">{{ license.contract_date | date:'mediumDate' }}</p>
-        </div>
+      </div>
     </div>
   </div>
 
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="activeModal.close()">
-      <fa-icon [icon]="faTimes"></fa-icon> Close
+  <div class="modal-footer justify-content-end">
+    <button type="button" class="btn btn-secondary border-0" (click)="activeModal.close()">
+      Close
     </button>
   </div>
+
+</div>

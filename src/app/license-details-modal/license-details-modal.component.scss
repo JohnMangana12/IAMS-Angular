@@ -1,0 +1,88 @@
+// license-details-modal.component.scss
+
+// 1. Header Styling (Using a Teal/Info gradient to distinguish from "Edit")
+.modal-header {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); // Gradient primary
+  color: white;
+  border-bottom: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1.5rem;
+
+  .btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    &:hover { opacity: 1; }
+  }
+}
+
+// 2. Data Typography
+.label-text {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6c757d; // Muted gray
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.value-text {
+  font-size: 1.1rem;
+  color: #212529;
+  font-weight: 500;
+}
+
+// 3. License Key Box (The centerpiece)
+.license-key-container {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #b6d4fe;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    color: #0d6efd;
+    font-size: 1rem;
+    word-break: break-all;
+  }
+}
+
+// 4. Copy Button
+.btn-copy {
+  color: #6c757d;
+  &:hover {
+    color: #0d6efd;
+    background-color: #e9ecef;
+  }
+}
+
+// 5. Footer & General
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 1rem 1.5rem;
+
+  .btn {
+    border-radius: 6px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+  }
+}
+
+// 6. Status Badge
+.badge-soft {
+  background-color: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+  padding: 0.5em 1em;
+  border-radius: 30px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
