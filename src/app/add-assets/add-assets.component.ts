@@ -8,7 +8,7 @@ import {
   faCube, faEdit, faTag, faBarcode, faAlignLeft, faLayerGroup,
   faLaptop, faMicrochip, faHeartbeat, faMapMarkerAlt, faUser,
   faBuilding, faUsers, faTrain, faFileInvoice, faCalendarCheck,
-  faShieldAlt, faSave
+  faShieldAlt, faSave, faHashtag, faStickyNote // <--- ADDED ICONS HERE
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -22,7 +22,7 @@ export class AddAssetsComponent implements OnInit {
 
     assetAddForm: FormGroup;
     assetId: number | null = null;
-    isLoading: boolean = false; // Added for button state
+    isLoading: boolean = false;
 
     // FontAwesome Icons
     faCube = faCube;
@@ -43,6 +43,8 @@ export class AddAssetsComponent implements OnInit {
     faCalendarCheck = faCalendarCheck;
     faShieldAlt = faShieldAlt;
     faSave = faSave;
+    faHashtag = faHashtag;      // <--- ADDED
+    faStickyNote = faStickyNote;// <--- ADDED
 
     // Dropdown Data
     condition: string[] = ['Good','Defective','Borrowed','Spare','Disposed Assets','Missing','For Disposal','Offsite'];
@@ -74,7 +76,7 @@ export class AddAssetsComponent implements OnInit {
             Description: [''],
             Location: [''],
             SerialNumber: [''],
-            AssetCondition: ['Good'], // Set a default
+            AssetCondition: ['Good'],
             Specification: [''],
             GroupAssetCategory: [''],
             PoNumber: [''],
@@ -85,14 +87,14 @@ export class AddAssetsComponent implements OnInit {
             CostCenter: [''],
             ScrumTeam: [''],
             AgileReleaseTrain: [''],
+            Comments: [''], // <--- ADDED
+            EmersonPartNumber: [''] // <--- ADDED
         });
     }
 
     ngOnInit(): void {
         if (this.data) {
             this.assetId = this.data.id;
-            // Note: If data.Warranty or data.DateAcquired come in as Strings (yyyy-MM-dd),
-            // you might need to convert them to NgbDateStruct here so the Datepicker displays them correctly.
             this.assetAddForm.patchValue(this.data);
         }
     }
@@ -102,7 +104,7 @@ export class AddAssetsComponent implements OnInit {
              return;
         }
 
-        this.isLoading = true; // Start loading spinner
+        this.isLoading = true;
 
         const warrantyDate: NgbDateStruct = this.assetAddForm.get('Warranty')?.value;
         const dateAcquired: NgbDateStruct = this.assetAddForm.get('DateAcquired')?.value;
@@ -131,7 +133,6 @@ export class AddAssetsComponent implements OnInit {
         });
     }
 
-    // Helper to format NgbDateStruct to YYYY-MM-DD
     private formatDate(date: NgbDateStruct): string | null {
         if (!date) return null;
         return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;

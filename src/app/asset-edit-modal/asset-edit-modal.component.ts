@@ -7,7 +7,7 @@ import {
   faEdit, faTag, faBarcode, faAlignLeft, faLayerGroup,
   faLaptop, faMicrochip, faHeartbeat, faMapMarkerAlt, faUser,
   faBuilding, faUsers, faTrain, faFileInvoice, faCalendarAlt,
-  faShieldAlt, faSave
+  faShieldAlt, faSave, faHashtag, faStickyNote // <--- Added Icons
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -41,6 +41,8 @@ export class AssetEditModalComponent implements OnInit {
     faCalendarAlt = faCalendarAlt;
     faShieldAlt = faShieldAlt;
     faSave = faSave;
+    faHashtag = faHashtag;      // <--- Added
+    faStickyNote = faStickyNote;// <--- Added
 
     // Data Arrays
     condition: string[] = ['Good','Defective','Borrowed','Spare','Disposed Assets','Missing','For Disposal','Offsite'];
@@ -72,6 +74,8 @@ export class AssetEditModalComponent implements OnInit {
             CostCenter: [''],
             ScrumTeam: [''],
             AgileReleaseTrain: [''],
+            Comments: [''], // <--- Added
+            EmersonPartNumber: [''] // <--- Added
         });
     }
 

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'; // Added TemplateRef, ViewChild
 import { AuthService } from '../auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { catchError } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar'; // Import MatSnackBar
+import { debounceTime, distinctUntilChanged, map, catchError } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // Import NgbModal
 
 // If you are using NgbTypeahead, ensure you have imported NgbModule
 // in your AppModule or the module where this component is declared.
@@ -27,12 +27,16 @@ export class LoginComponent implements OnInit {
   // Consider fetching usernames from an API for typeahead if possible, otherwise keep this static list
   usernames: string[] = ['admin@emerson.com', 'viewer@emerson.com', 'johnnoel.mangana@emerson.com', 'user1']; // Static list for typeahead
   model: any; // For typeahead, not directly used in login logic
+  // Variable for the reset password modal input
+  resetUsernameStr: string = '';
+
 
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar // Inject MatSnackBar
+    private snackBar: MatSnackBar, // Inject MatSnackBar
+    private modalService: NgbModal // Inject NgbModal
   ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
@@ -84,6 +88,44 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+  // *** NEW METHODS FOR RESET PASSWORD ***
+
+  openResetModal(content: TemplateRef<any>) {
+    this.resetUsernameStr = ''; // Clear previous input
+    this.modalService.open(content, { centered: true });
+  }
+
+  confirmReset(modal: any) {
+    if (!this.resetUsernameStr) {
+      this.snackBar.open('Please enter a username.', 'Close', {
+        duration: 3000,
+        panelClass: ['warning-snackbar']
+      });
+      return;
+    }
+
+    this.authService.resetUserPassword(this.resetUsernameStr).pipe(
+      catchError(err => {
+        console.error('Reset error', err);
+        const errorMsg = err.error && err.error.error ? err.error.error : 'Failed to reset password.';
+        this.snackBar.open(errorMsg, 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
+        return of(null);
+      })
+    ).subscribe(response => {
+      if (response) {
+        // Close the modal
+        modal.close();
+
+        // Show success message (In a real app, you'd say "Check your email".
+        // Here we show the temp password for demonstration/internal usage).
+        alert(response.message);
+      }
+    });
+  }
+
 
   private redirectToCorrectDashboard(): void {
     // *** NEW CHECK: Redirect to change password component if required ***

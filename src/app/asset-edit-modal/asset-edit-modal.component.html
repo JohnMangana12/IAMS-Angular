@@ -21,20 +21,29 @@
       <!-- SECTION 1: IDENTIFICATION -->
       <div class="section-title">Identification</div>
       <div class="row g-3 mb-2">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <label class="form-label">PSS Asset Tag</label>
           <div class="input-group">
             <span class="input-group-text"><fa-icon [icon]="faTag"></fa-icon></span>
             <input type="text" class="form-control" formControlName="AssetTag" placeholder="Tag ID">
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <label class="form-label">Serial Number</label>
           <div class="input-group">
             <span class="input-group-text"><fa-icon [icon]="faBarcode"></fa-icon></span>
             <input type="text" class="form-control" formControlName="SerialNumber" placeholder="Serial No.">
           </div>
         </div>
+        <!-- NEW FIELD -->
+        <div class="col-md-4">
+          <label class="form-label">Emerson P/N / SE Code</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faHashtag"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="EmersonPartNumber" placeholder="Part # or SE Code">
+          </div>
+        </div>
+
         <div class="col-12">
           <label class="form-label">Description</label>
           <div class="input-group">
@@ -131,7 +140,7 @@
 
       <!-- SECTION 4: PURCHASE -->
       <div class="section-title">Purchase & Dates</div>
-      <div class="row g-3">
+      <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label class="form-label">PO Number</label>
           <div class="input-group">
@@ -154,6 +163,18 @@
             <input class="form-control" placeholder="yyyy-mm-dd"
                    formControlName="Warranty" ngbDatepicker #d_warranty="ngbDatepicker" (click)="d_warranty.toggle()">
           </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: NOTES (New) -->
+      <div class="section-title">Notes</div>
+      <div class="row g-3">
+        <div class="col-12">
+            <label class="form-label">Comments</label>
+            <div class="input-group">
+              <span class="input-group-text"><fa-icon [icon]="faStickyNote"></fa-icon></span>
+              <textarea class="form-control" formControlName="Comments" rows="2" placeholder="Any additional details..."></textarea>
+            </div>
         </div>
       </div>
 

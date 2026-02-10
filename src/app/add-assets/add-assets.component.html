@@ -18,23 +18,35 @@
   <div class="modal-body p-4">
     <form [formGroup]="assetAddForm" (ngSubmit)="onFormSubmit()">
 
-      <!-- SECTION 1: IDENTIFICATION -->
+      <!-- SECTION 1: IDENTIFICATION (Updated) -->
       <div class="section-title text-primary">Identification</div>
       <div class="row g-3 mb-3">
-        <div class="col-md-6">
+        <!-- PSS Tag -->
+        <div class="col-md-4">
           <label class="form-label">PSS Asset Tag</label>
           <div class="input-group">
             <span class="input-group-text"><fa-icon [icon]="faTag"></fa-icon></span>
             <input type="text" class="form-control" formControlName="AssetTag" placeholder="e.g. PSS-1001">
           </div>
         </div>
-        <div class="col-md-6">
+        <!-- Serial Number -->
+        <div class="col-md-4">
           <label class="form-label">Serial Number</label>
           <div class="input-group">
             <span class="input-group-text"><fa-icon [icon]="faBarcode"></fa-icon></span>
             <input type="text" class="form-control" formControlName="SerialNumber" placeholder="e.g. SN-998877">
           </div>
         </div>
+        <!-- Emerson Part Number (New) -->
+        <div class="col-md-4">
+          <label class="form-label">Emerson P/N / SE Code</label>
+          <div class="input-group">
+            <span class="input-group-text"><fa-icon [icon]="faHashtag"></fa-icon></span>
+            <input type="text" class="form-control" formControlName="EmersonPartNumber" placeholder="Part # or SE Code">
+          </div>
+        </div>
+
+        <!-- Description -->
         <div class="col-12">
           <label class="form-label">Description</label>
           <div class="input-group">
@@ -133,7 +145,7 @@
 
       <!-- SECTION 4: PURCHASE & DATES -->
       <div class="section-title text-primary">Purchase Info</div>
-      <div class="row g-3">
+      <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label class="form-label">PO Number</label>
           <div class="input-group">
@@ -156,6 +168,18 @@
             <input class="form-control" placeholder="yyyy-mm-dd"
                    name="d_warranty" formControlName="Warranty" ngbDatepicker #d_warranty="ngbDatepicker" (click)="d_warranty.toggle()">
           </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: NOTES (New) -->
+      <div class="section-title text-primary">Notes</div>
+      <div class="row g-3">
+        <div class="col-12">
+            <label class="form-label">Comments</label>
+            <div class="input-group">
+              <span class="input-group-text"><fa-icon [icon]="faStickyNote"></fa-icon></span>
+              <textarea class="form-control" formControlName="Comments" rows="2" placeholder="Any additional details..."></textarea>
+            </div>
         </div>
       </div>
 

@@ -39,11 +39,21 @@
           />
         </div>
 
+        <!-- NEW: Forgot Password Link -->
+        <div class="d-flex justify-content-end mb-3">
+          <a
+            href="javascript:void(0)"
+            class="text-decoration-none small"
+            (click)="openResetModal(resetModal)">
+            Forgot Password?
+          </a>
+        </div>
+
         <!-- Login Button -->
         <div class="d-grid">
           <button
             type="submit"
-            class="btn btn-primary btn-lg mt-3"
+            class="btn btn-primary btn-lg"
             [disabled]="!form.valid"
           >
             Login
@@ -53,3 +63,32 @@
     </div>
   </div>
 </div>
+
+<!-- NEW: Reset Password Modal Template -->
+<ng-template #resetModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Reset Password</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p>Enter your username. Your password will be reset to the default temporary password.</p>
+    <div class="mb-3">
+      <label for="resetUsername" class="form-label">Username</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-person"></i></span>
+        <!-- Note: Using standalone ngModel here for simplicity within the modal -->
+        <input
+          type="text"
+          class="form-control"
+          id="resetUsername"
+          [(ngModel)]="resetUsernameStr"
+          placeholder="Enter username"
+          (keydown.enter)="confirmReset(modal)">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="confirmReset(modal)">Reset Password</button>
+  </div>
+</ng-template>

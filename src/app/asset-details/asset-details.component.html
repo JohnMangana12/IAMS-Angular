@@ -45,6 +45,15 @@
           </div>
         </div>
 
+        <!-- NEW: Emerson Part Number -->
+        <div class="col-md-6 detail-item">
+          <div class="icon-wrapper"><fa-icon [icon]="faHashtag"></fa-icon></div>
+          <div>
+            <span class="label-text">Emerson P/N / SE Code</span>
+            <div class="value-text font-monospace">{{ asset.EmersonPartNumber || 'N/A' }}</div>
+          </div>
+        </div>
+
         <div class="col-md-6 detail-item">
           <div class="icon-wrapper"><fa-icon [icon]="faMicrochip"></fa-icon></div>
           <div>
@@ -140,6 +149,18 @@
             </div>
           </div>
         </div>
+
+        <!-- NEW SECTION 4: Notes/Comments -->
+        <div class="col-12 mb-2 mt-2"><h6 class="text-primary border-bottom pb-2">Additional Notes</h6></div>
+        <div class="col-12 detail-item">
+            <div class="icon-wrapper"><fa-icon [icon]="faStickyNote"></fa-icon></div>
+            <div class="w-100">
+              <span class="label-text">Comments</span>
+              <div class="value-text bg-light p-3 rounded border" style="white-space: pre-wrap; min-height: 60px;">
+                {{ asset.Comments || 'No comments available for this asset.' }}
+              </div>
+            </div>
+          </div>
 
       </div>
     </div>

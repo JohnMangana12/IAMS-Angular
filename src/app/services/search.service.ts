@@ -1,13 +1,13 @@
-// search.service.ts
 import { Injectable } from '@angular/core';
 import { Subject, Observable, debounceTime, distinctUntilChanged, switchMap, tap, of, catchError } from 'rxjs';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import { HttpClient } from '@angular/common/http';
 
 export interface Asset {
-  id: number; // Assuming your assets have an ID
+  id: number;
   AssetTag: string;
   Description: string;
   SerialNumber: string;
+  EmersonPartNumber: string; // Added
   Location: string;
   AssetCondition: string;
   Specification: string;
@@ -20,6 +20,7 @@ export interface Asset {
   CostCenter: string;
   ScrumTeam: string;
   AgileReleaseTrain: string;
+  Comments: string; // Added
 }
 
 @Injectable({
@@ -37,25 +38,22 @@ export class SearchService {
   constructor(private http: HttpClient) {
     this.searchTermSubject
       .pipe(
-        debounceTime(300), // Wait for 300ms pause in typing
-        distinctUntilChanged(), // Only emit if the term has changed
-        switchMap(term => { // Switch to a new observable for each term, canceling previous requests
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(term => {
           if (!term.trim()) {
-            return of([]); // Emit an empty array immediately
+            return of([]);
           }
-          // Call the performSearch method with the term
-          // We'll be sending a parameter that the backend can interpret to search multiple fields.
           return this.performSearch(term);
         }),
-        catchError(error => { // Catch any errors from the stream (e.g., API errors)
+        catchError(error => {
           console.error('Error in search stream:', error);
-          // Emit a specific error message to the header component
           this.searchResultsSubject.error({ message: 'Failed to load search results. Please try again.' });
-          return of([]); // Return an empty array on error to prevent breaking the stream
+          return of([]);
         })
       )
       .subscribe(results => {
-        this.searchResultsSubject.next(results); // Emit the fetched results
+        this.searchResultsSubject.next(results);
       });
   }
 
@@ -69,16 +67,11 @@ export class SearchService {
   }
 
   private performSearch(term: string): Observable<Asset[]> {
-    // *** MODIFICATION HERE ***
-    // We are now sending a 'search' query parameter.
-    // The backend will be responsible for searching across AssetTag, Description, and SerialNumber.
     return this.http.get<Asset[]>(`${this.apiUrl}?search=${encodeURIComponent(term)}`).pipe(
-      tap(results => console.log(`Search results for "${term}":`, results)), // Log results for debugging
-      catchError(error => { // Handle API call specific errors
+      tap(results => console.log(`Search results for "${term}":`, results)),
+      catchError(error => {
         console.error(`Error fetching search results for "${term}":`, error);
-        // You can return a more specific error here if needed
-        // For now, we'll let the main catchError in the pipe handle the error notification
-        return of([]); // Return empty array on API error
+        return of([]);
       })
     );
   }

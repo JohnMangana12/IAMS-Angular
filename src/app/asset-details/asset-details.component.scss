@@ -48,6 +48,13 @@
   display: block;
 }
 
+// Add this to improve the look of the comments box
+.value-text.bg-light {
+    font-size: 0.95rem;
+    color: #495057;
+    border-style: dashed !important; // Makes it look like a "note"
+}
+
 .value-text {
   font-size: 1.1rem;
   color: #212529; // Dark text

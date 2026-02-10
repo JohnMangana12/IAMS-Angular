@@ -5,7 +5,7 @@ import {
   faInfoCircle, faTag, faBarcode, faMicrochip, faLayerGroup,
   faLaptop, faMapMarkerAlt, faUser, faBuilding, faUsers,
   faTrain, faFileInvoice, faCalendarCheck, faShieldAlt,
-  faExclamationTriangle
+  faExclamationTriangle, faHashtag, faStickyNote // <--- Added Icons
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -34,6 +34,8 @@ export class AssetDetailsComponent implements OnInit {
   faCalendarCheck = faCalendarCheck;
   faShieldAlt = faShieldAlt;
   faExclamationTriangle = faExclamationTriangle;
+  faHashtag = faHashtag;      // <--- Added
+  faStickyNote = faStickyNote;// <--- Added
 
   constructor(public activeModal: NgbActiveModal) {}
 
@@ -47,18 +49,11 @@ export class AssetDetailsComponent implements OnInit {
     this.activeModal.dismiss('User clicked close');
   }
 
-    // Helper to visually flag expired warranties
-  // Update the parameter type to accept string OR Date
   isWarrantyExpired(val?: string | Date): boolean {
     if (!val) return false;
-
-    // The Date constructor works with both date strings and Date objects
     const warranty = new Date(val);
     const today = new Date();
-
-    // Check if the date is valid before comparing
     if (isNaN(warranty.getTime())) return false;
-
     return warranty < today;
   }
 }

@@ -35,114 +35,100 @@ app.get('/', (req, res) => {
     res.send('Welcome to asset management API!');
 });
 
-// Modified /assets endpoint to select all relevant columns and allow filtering by AgileReleaseTrain
+// ==========================================
+// UPDATED GET ASSETS (Includes new columns + Search)
+// ==========================================
 app.get('/assets', async (req, res) => {
   try {
-    let query = 'SELECT id, "AssetTag", "Description", "Location", "SerialNumber", "AssetCondition", "Specification", "GroupAssetCategory", "PoNumber", "Warranty", "DateAcquired", "CheckoutTo", "AssetCategory", "CostCenter", "ScrumTeam", "AgileReleaseTrain" FROM assets';
+    // Added "Comments" and "EmersonPartNumber" to selection
+    let query = 'SELECT id, "AssetTag", "Description", "Location", "SerialNumber", "AssetCondition", "Specification", "GroupAssetCategory", "PoNumber", "Warranty", "DateAcquired", "CheckoutTo", "AssetCategory", "CostCenter", "ScrumTeam", "AgileReleaseTrain", "Comments", "EmersonPartNumber" FROM assets';
     const queryParams = [];
     let paramIndex = 1;
 
-    // *** MODIFICATION HERE for global search ***
-    // Check if a search term is provided in the query parameters
+    // Global Search
     if (req.query.search) {
       const searchTerm = req.query.search;
-      // If this is the first condition, start with WHERE, otherwise use AND
-      if (queryParams.length === 0) {
-        query += ' WHERE ';
-      } else {
-        query += ' AND ';
-      }
+      if (queryParams.length === 0) query += ' WHERE ';
+      else query += ' AND ';
 
-      // Build the search condition to include AssetTag, Description, SerialNumber, CostCenter, and AgileReleaseTrain
-      // Use ILIKE for case-insensitive matching and '%' for partial matching.
-      query += `("AssetTag" ILIKE $${paramIndex} OR "Description" ILIKE $${paramIndex} OR "SerialNumber" ILIKE $${paramIndex} OR "CostCenter" ILIKE $${paramIndex} OR "AgileReleaseTrain" ILIKE $${paramIndex})`;
+      // Added EmersonPartNumber to search logic
+      query += `("AssetTag" ILIKE $${paramIndex} OR "Description" ILIKE $${paramIndex} OR "SerialNumber" ILIKE $${paramIndex} OR "CostCenter" ILIKE $${paramIndex} OR "AgileReleaseTrain" ILIKE $${paramIndex} OR "EmersonPartNumber" ILIKE $${paramIndex})`;
 
-      // Add the search term for each ILIKE condition
       queryParams.push(`%${searchTerm}%`);
       paramIndex++;
     }
 
-    // Filter by AgileReleaseTrain if provided
-    if (req.query.AgileReleaseTrain !== undefined && req.query.AgileReleaseTrain !== null && req.query.AgileReleaseTrain !== '') {
-      if (queryParams.length === 0) query += ' WHERE ';
-      else query += ' AND ';
+    // Filters
+    if (req.query.AgileReleaseTrain) {
+      if (queryParams.length === 0) query += ' WHERE '; else query += ' AND ';
       query += `"AgileReleaseTrain" = $${paramIndex}`;
       queryParams.push(req.query.AgileReleaseTrain);
       paramIndex++;
     }
 
-    // Add other filters as previously implemented if needed, for example:
-    // Filter by GroupAssetCategory if provided
     if (req.query.GroupAssetCategory) {
-      if (queryParams.length === 0) query += ' WHERE ';
-      else query += ' AND ';
+      if (queryParams.length === 0) query += ' WHERE '; else query += ' AND ';
       query += `"GroupAssetCategory" = $${paramIndex}`;
       queryParams.push(req.query.GroupAssetCategory);
       paramIndex++;
     }
 
-    // Filter by AssetCondition if provided
     if (req.query.AssetCondition){
-      if (queryParams.length === 0) query += 'WHERE';
-      else query += ' AND ';
+      if (queryParams.length === 0) query += ' WHERE '; else query += ' AND ';
       query += `"AssetCondition" = $${paramIndex}`;
       queryParams.push(req.query.AssetCondition);
       paramIndex++;
     }
 
-    // Filter by CheckoutTo if provided
-    if (req.query.CheckoutTo !== undefined && req.query.CheckoutTo !== null && req.query.CheckoutTo !== '') {
-      if (queryParams.length === 0) query += ' WHERE ';
-      else query += ' AND ';
+    if (req.query.CheckoutTo) {
+      if (queryParams.length === 0) query += ' WHERE '; else query += ' AND ';
       query += `"CheckoutTo" = $${paramIndex}`;
       queryParams.push(req.query.CheckoutTo);
       paramIndex++;
     }
 
-    // Filter by ScrumTeam if provided
-    if (req.query.ScrumTeam !== undefined && req.query.ScrumTeam !== null && req.query.ScrumTeam !== '') {
-      if (queryParams.length === 0) query += ' WHERE ';
-      else query += ' AND ';
+    if (req.query.ScrumTeam) {
+      if (queryParams.length === 0) query += ' WHERE '; else query += ' AND ';
       query += `"ScrumTeam" = $${paramIndex}`;
       queryParams.push(req.query.ScrumTeam);
       paramIndex++;
     }
 
-
-    console.log("SQL Query:", query); // Debugging the generated query
-    console.log("Query Params:", queryParams); // Debugging the parameters
     const result = await pool.query(query, queryParams);
-    console.log('Data being sent:', result.rows); // ADD THIS LINE
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching assets:', error);
     res.status(500).json({ error: 'Error fetching assets' });
   }
 });
+
+// ==========================================
+// UPDATED POST ASSETS (Insert new columns)
+// ==========================================
 app.post('/assets', async (req, res) => {
     const newAsset = req.body;
     try{
     const query = {
-      // 1. Add "DateAcquired" to the columns list
-      // 2. Add a new placeholder, $13
-    text: 'INSERT INTO assets ("AssetTag", "Description", "Location", "SerialNumber", "AssetCondition", "Specification", "GroupAssetCategory", "PoNumber", "Warranty", "CheckoutTo", "AssetCategory", "CostCenter", "DateAcquired", "ScrumTeam", "AgileReleaseTrain") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',
-      // 3. Add "DateAcquired" to the values array
-    values: [newAsset.AssetTag,
-      newAsset.Description,
-      newAsset.Location,
-      newAsset.SerialNumber,
-      newAsset.AssetCondition,
-      newAsset.Specification,
-      newAsset.GroupAssetCategory,
-      newAsset.PoNumber,
-      newAsset.Warranty, // This can be null
-      newAsset.CheckoutTo,
-      newAsset.AssetCategory,
-      newAsset.CostCenter,
-      newAsset.DateAcquired, // This can also be null
-      newAsset.ScrumTeam, // Corrected: Removed trailing comma
-      newAsset.AgileReleaseTrain
-
+    // Added $16 and $17
+    text: 'INSERT INTO assets ("AssetTag", "Description", "Location", "SerialNumber", "AssetCondition", "Specification", "GroupAssetCategory", "PoNumber", "Warranty", "CheckoutTo", "AssetCategory", "CostCenter", "DateAcquired", "ScrumTeam", "AgileReleaseTrain", "Comments", "EmersonPartNumber") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',
+    values: [
+        newAsset.AssetTag,
+        newAsset.Description,
+        newAsset.Location,
+        newAsset.SerialNumber,
+        newAsset.AssetCondition,
+        newAsset.Specification,
+        newAsset.GroupAssetCategory,
+        newAsset.PoNumber,
+        newAsset.Warranty,
+        newAsset.CheckoutTo,
+        newAsset.AssetCategory,
+        newAsset.CostCenter,
+        newAsset.DateAcquired,
+        newAsset.ScrumTeam,
+        newAsset.AgileReleaseTrain,
+        newAsset.Comments,          // $16
+        newAsset.EmersonPartNumber  // $17
     ],
     };
     await pool.query(query);
@@ -153,15 +139,16 @@ app.post('/assets', async (req, res) => {
         res.status(500).json({ error: 'Error creating assets' });
     }
 });
+// ==========================================
+// UPDATED PUT ASSETS (Update new columns)
+// ==========================================
 app.put('/assets/:id', async (req, res) => {
   const assetId = req.params.id;
   const updatedAsset = req.body;
   try {
       const query = {
-            // 1. Add "DateAcquired" = $13 to the SET clause
-            // 2. Change the WHERE id placeholder from $13 to $14
-          text: 'UPDATE assets SET "AssetTag" = $1, "Description" = $2, "Location" = $3, "SerialNumber" = $4, "AssetCondition" = $5, "Specification" = $6, "GroupAssetCategory" = $7, "PoNumber" = $8, "Warranty" = $9, "CheckoutTo" = $10, "AssetCategory" = $11, "CostCenter" = $12, "DateAcquired" =$13, "ScrumTeam" = $14, "AgileReleaseTrain" = $15 WHERE id = $16',
-            // 3. Add updatedAsset.DateAcquired to the values array in the correct position
+          // Added Comments=$16, EmersonPartNumber=$17. ID is now $18
+          text: 'UPDATE assets SET "AssetTag" = $1, "Description" = $2, "Location" = $3, "SerialNumber" = $4, "AssetCondition" = $5, "Specification" = $6, "GroupAssetCategory" = $7, "PoNumber" = $8, "Warranty" = $9, "CheckoutTo" = $10, "AssetCategory" = $11, "CostCenter" = $12, "DateAcquired" =$13, "ScrumTeam" = $14, "AgileReleaseTrain" = $15, "Comments" = $16, "EmersonPartNumber" = $17 WHERE id = $18',
           values: [
               updatedAsset.AssetTag,
               updatedAsset.Description,
@@ -178,7 +165,9 @@ app.put('/assets/:id', async (req, res) => {
               updatedAsset.DateAcquired,
               updatedAsset.ScrumTeam,
               updatedAsset.AgileReleaseTrain,
-              parseInt(assetId, 10) // The value for $15
+              updatedAsset.Comments,           // $16
+              updatedAsset.EmersonPartNumber,  // $17
+              parseInt(assetId, 10)            // $18
           ],
       };
       await pool.query(query);
@@ -200,11 +189,10 @@ app.delete('/assets/:id', async (req, res) => {
   }
 });
 
-
 // REVISED AND CORRECTED ENDPOINT FOR DASHBOARD WIDGETS
 app.get('/assets/summary', async (req, res) => {
+    // ... paste your existing code here
     try {
-        // This single query does all the counting on the database side
         const query = `
             SELECT
                 COUNT(*) FILTER (WHERE "AssetCategory" IN ('Rack Type Server', 'Tower Type Server')) AS servers,
@@ -213,24 +201,15 @@ app.get('/assets/summary', async (req, res) => {
                 COUNT(*) FILTER (WHERE "AssetCategory" = 'Laptop') AS laptops
             FROM assets
         `;
-
         const result = await pool.query(query);
-
-        // The query returns a single row with all our counts.
-        // Example: { rows: [{ servers: '10', desktops: '50', deltav: '5506', thirdparty: '30' }] }
         const counts = result.rows[0];
-
-        // Directly use the results from the database.
-        // We use parseInt to ensure they are numbers, and || 0 as a safety net.
         const summary = {
             servers:    parseInt(counts.servers, 10) || 0,
             desktops:   parseInt(counts.desktops, 10) || 0,
-            deltaV:     parseInt(counts.deltav, 10) || 0, // SQL aliases are lowercase by default
+            deltaV:     parseInt(counts.deltav, 10) || 0,
             laptops:    parseInt(counts.laptops, 10) || 0
         };
-
         res.json(summary);
-
     } catch (error) {
         console.error('Error fetching asset summary:', error);
         res.status(500).json({ error: 'Error fetching asset summary' });
@@ -684,6 +663,40 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Internal server error.' });
     }
 });
+
+// NEW ENDPOINT: Reset Password to Default (Forgot Password flow)
+app.post('/reset-password', async (req, res) => {
+    const { username } = req.body;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username is required.' });
+    }
+
+    try {
+        // 1. Check if user exists
+        const userCheck = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+        if (userCheck.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        // 2. Hash a temporary default password (e.g., "Emerson123!")
+        const tempPassword = 'Emerson123!';
+        const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+
+        // 3. Update user: Set new password AND set is_default_password to TRUE
+        await pool.query(
+            'UPDATE users SET password = $1, is_default_password = TRUE WHERE username = $2',
+            [hashedPassword, username]
+        );
+
+        res.json({ message: `Password reset successfully. Temporary password is: ${tempPassword}` });
+
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
 
 // ==========================================
 // LICENSE MANAGEMENT ROUTES
