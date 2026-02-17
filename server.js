@@ -1,5 +1,8 @@
 //const fs = require('fs');
 //const https = require('https');
+// 1. Import nodemailer and crypto at the top of the file
+const nodemailer = require('nodemailer');
+const crypto = require('crypto'); // Built-in module for generating secure random tokens
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -18,6 +21,22 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+
+// 2. Configure Email Transporter (Add this before routes)
+// Authenticate with Gmail (or any service), but send FROM your Emerson email
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // The service that actually sends the email
+    auth:{
+      user: process.env.GMAIL_USER, // Your Gmail address for authentication
+      pass: process.env.GMAIL_APP_PASSWORD // Gmail app-specific password
+    }
+});
+
+// Your Emerson email (what users will see as sender)
+const SENDER_EMAIL = process.env.EMERSON_EMAIL || 'your.name@emerson.com';
+const SENDER_NAME = process.env.SENDER_NAME || 'IAMS Asset Management';
+
+
 
 const pool = new Pool({
     user: process.env.DB_USER,
@@ -664,8 +683,8 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// NEW ENDPOINT: Reset Password to Default (Forgot Password flow)
-app.post('/reset-password', async (req, res) => {
+// 3. NEW: Request Password Reset (Sends Email)
+app.post('/request-password-reset', async (req, res) => {
     const { username } = req.body;
 
     if (!username) {
@@ -673,30 +692,90 @@ app.post('/reset-password', async (req, res) => {
     }
 
     try {
-        // 1. Check if user exists
-        const userCheck = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+        // Find user
+        const userCheck = await pool.query('SELECT id, email FROM users WHERE username = $1', [username]);
         if (userCheck.rows.length === 0) {
+            // Security: Don't reveal if user exists, but for now we return 404 based on your previous code
             return res.status(404).json({ error: 'User not found.' });
         }
+        const user = userCheck.rows[0];
 
-        // 2. Hash a temporary default password (e.g., "Emerson123!")
-        const tempPassword = 'Emerson123!';
-        const hashedPassword = await bcrypt.hash(tempPassword, saltRounds);
+        // Generate Token
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires = new Date(Date.now() + 3600000); // 1 hour from now
 
-        // 3. Update user: Set new password AND set is_default_password to TRUE
+        // Save Token to DB
         await pool.query(
-            'UPDATE users SET password = $1, is_default_password = TRUE WHERE username = $2',
-            [hashedPassword, username]
+            'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+            [token, expires, user.id]
         );
 
-        res.json({ message: `Password reset successfully. Temporary password is: ${tempPassword}` });
+        // Create Link (Assumes Angular runs on port 4200)
+        const resetLink = `http://localhost:4200/reset-password-confirm?token=${token}`;
+
+        // Send Email
+        const mailOptions = {
+            from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`, // Shows your Emerson email to users
+            to: user.email,
+            subject: 'Password Reset Request - IAMS (Infra Asset Management System)',
+            html: `
+                <h3>Password Reset Requested</h3>
+                <p>You requested a password reset. Please click the link below to set a new password:</p>
+                <p><a href="${resetLink}">Reset Password</a></p>
+                <p>This link expires in 1 hour.</p>
+                <p>If you did not request this, please ignore this email.</p>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ error: 'Failed to send email.' });
+            }
+            res.json({ message: `Reset link sent to ${user.email}. Please check your inbox.` });
+        });
 
     } catch (error) {
-        console.error('Error resetting password:', error);
+        console.error('Error requesting reset:', error);
         res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
+// 4. NEW: Perform Password Reset (Clicked from Email)
+app.post('/reset-password-confirm', async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+        return res.status(400).json({ error: 'Token and new password are required.' });
+    }
+
+    try {
+        // Find user with valid token and expiration
+        const result = await pool.query(
+            'SELECT id FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()',
+            [token]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'Invalid or expired token.' });
+        }
+
+        const user = result.rows[0];
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update Password and Clear Token
+        await pool.query(
+            'UPDATE users SET password = $1, is_default_password = FALSE, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
+            [hashedPassword, user.id]
+        );
+
+        res.json({ message: 'Password has been reset successfully. You may now login.' });
+
+    } catch (error) {
+        console.error('Error confirming reset:', error);
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
 
 // ==========================================
 // LICENSE MANAGEMENT ROUTES

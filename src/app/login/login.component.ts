@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
     this.modalService.open(content, { centered: true });
   }
 
-  confirmReset(modal: any) {
+confirmReset(modal: any) {
     if (!this.resetUsernameStr) {
       this.snackBar.open('Please enter a username.', 'Close', {
         duration: 3000,
@@ -104,10 +104,11 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.authService.resetUserPassword(this.resetUsernameStr).pipe(
+    // Call the new request method
+    this.authService.requestPasswordReset(this.resetUsernameStr).pipe(
       catchError(err => {
         console.error('Reset error', err);
-        const errorMsg = err.error && err.error.error ? err.error.error : 'Failed to reset password.';
+        const errorMsg = err.error && err.error.error ? err.error.error : 'Failed to send reset link.';
         this.snackBar.open(errorMsg, 'Close', {
           duration: 5000,
           panelClass: ['error-snackbar']
@@ -116,12 +117,12 @@ export class LoginComponent implements OnInit {
       })
     ).subscribe(response => {
       if (response) {
-        // Close the modal
         modal.close();
-
-        // Show success message (In a real app, you'd say "Check your email".
-        // Here we show the temp password for demonstration/internal usage).
-        alert(response.message);
+        // Show success message regarding EMAIL
+        this.snackBar.open(response.message, 'Close', {
+          duration: 5000,
+          panelClass: ['success-snackbar'] // You might need to add this class to css
+        });
       }
     });
   }

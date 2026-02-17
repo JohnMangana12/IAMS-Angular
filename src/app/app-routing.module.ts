@@ -21,8 +21,10 @@ import { MyAssetsComponent } from './my-assets/my-assets.component';
 
 // --- Import your Asset Detail Component ---
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
+import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-password-confirm.component';
 
 const routes: Routes = [
+  { path: 'reset-password-confirm', component: ResetPasswordConfirmComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
 

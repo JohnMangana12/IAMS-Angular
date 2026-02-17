@@ -66,6 +66,7 @@ import  {DashboardWarrantyComponent} from "./dashboard-warranty/dashboard-warran
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { LicenseFormModalComponent } from './license-form-modal/license-form-modal.component';
 import { LicenseDetailsModalComponent } from './license-details-modal/license-details-modal.component';
+import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-password-confirm.component';
 
 
 
@@ -124,6 +125,7 @@ import { LicenseDetailsModalComponent } from './license-details-modal/license-de
     ChangePasswordComponent,
     LicenseFormModalComponent,
     LicenseDetailsModalComponent,
+    ResetPasswordConfirmComponent,
 
 
 

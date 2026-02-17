@@ -64,6 +64,7 @@
   </div>
 </div>
 
+
 <!-- NEW: Reset Password Modal Template -->
 <ng-template #resetModal let-modal>
   <div class="modal-header">
@@ -71,12 +72,13 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <p>Enter your username. Your password will be reset to the default temporary password.</p>
+    <!-- UPDATED TEXT: Inform the user about the email link -->
+    <p>Enter your username. We will send a password reset link to your registered email address.</p>
+
     <div class="mb-3">
       <label for="resetUsername" class="form-label">Username</label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-person"></i></span>
-        <!-- Note: Using standalone ngModel here for simplicity within the modal -->
         <input
           type="text"
           class="form-control"
@@ -89,6 +91,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
-    <button type="button" class="btn btn-danger" (click)="confirmReset(modal)">Reset Password</button>
+    <!-- UPDATED LABEL: Changed from "Reset Password" to "Send Reset Link" -->
+    <button type="button" class="btn btn-primary" (click)="confirmReset(modal)">Send Reset Link</button>
   </div>
 </ng-template>

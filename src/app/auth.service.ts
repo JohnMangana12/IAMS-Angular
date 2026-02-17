@@ -97,8 +97,14 @@ export class AuthService {
 // *** END NEW METHOD ***
 
 // *** NEW METHOD: Request Password Reset ***
-  resetUserPassword(username: string): Observable<any> {
-    return this.http.post('http://localhost:3000/reset-password', { username });
+ // 1. Request the link
+  requestPasswordReset(username: string): Observable<any> {
+    return this.http.post('http://localhost:3000/request-password-reset', { username });
+  }
+
+  // 2. Confirm the reset (used by the new component later)
+  confirmPasswordReset(token: string, newPassword: string): Observable<any> {
+    return this.http.post('http://localhost:3000/reset-password-confirm', { token, newPassword });
   }
 
 
