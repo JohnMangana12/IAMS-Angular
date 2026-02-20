@@ -1,4 +1,4 @@
-# IAMS (Intelligent Asset Management System)
+# IAMS (IT Infrastructure Asset Management System)
 
 IAMS is a web-based asset management platform for tracking IT and operational assets, monitoring warranty status, and managing access by user role.
 
