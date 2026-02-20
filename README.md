@@ -1,27 +1,113 @@
-# Login3
+# IAMS (Intelligent Asset Management System)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.1.
+IAMS is a web-based asset management platform for tracking IT and operational assets, monitoring warranty status, and managing access by user role.
 
-## Development server
+## Highlights
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Role-based user experience with guarded routes for admin and user dashboards.
+- Asset lifecycle workflows including listing, detail views, and editing flows.
+- Dashboard modules for inventory visibility and operational reporting.
+- Support modules for licenses, spare items, third-party items, and warranty monitoring.
 
-## Code scaffolding
+## Tech Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Angular 19 (TypeScript)
+- Angular Material + Bootstrap
+- Node.js / Express
+- JSON Server for local mock data workflows
+- Karma + Jasmine for unit testing
 
-## Build
+## Project Structure
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- `src/app/` — Angular application modules, components, guards, and services
+- `backend/` — Backend service code
+- `server.js` / `server.ts` — Server entry points
+- `db.json` — Local mock data source
 
-## Running unit tests
+## Getting Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Prerequisites
 
-## Running end-to-end tests
+- Node.js 18+
+- npm 9+
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Install
 
-## Further help
+```bash
+npm install
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Run the frontend
+
+```bash
+npm start
+```
+
+App runs at `http://localhost:4200/`.
+
+### Run mock API (optional)
+
+```bash
+npm run json-server
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Test
+
+```bash
+npm test
+```
+
+## Notes for Recruiters & Developers
+
+This repository demonstrates practical Angular architecture patterns in a real operations-focused domain: route guards, role-specific navigation, reusable dashboard modules, and multi-feature asset workflows.
+
+## My Role & Contributions
+
+I designed and implemented key frontend and integration workflows for this system, with focus on maintainability, usability, and role-aware access.
+
+- Built and refined role-based navigation and guarded routing flows.
+- Implemented and improved asset-focused modules (listing, details, and management views).
+- Worked on dashboard-driven visibility for operations and asset monitoring.
+- Integrated UI components and service flows for real-world inventory workflows.
+
+### What this demonstrates
+
+- Angular architecture in a multi-feature business application.
+- Practical TypeScript component/service patterns.
+- Full-stack integration thinking between UI, API, and local data simulation.
+
+## Screenshots
+
+Add screenshots to help reviewers quickly understand the product experience.
+
+Suggested files to add under `docs/screenshots/`:
+
+- `login.png` — login page
+- `dashboard-admin.png` — admin dashboard
+- `dashboard-user.png` — user dashboard
+- `asset-details.png` — asset details view
+- `warranty-monitoring.png` — warranty monitoring view
+
+Example markdown once images are added:
+
+```markdown
+![Login](docs/screenshots/login.png)
+![Admin Dashboard](docs/screenshots/dashboard-admin.png)
+![User Dashboard](docs/screenshots/dashboard-user.png)
+![Asset Details](docs/screenshots/asset-details.png)
+![Warranty Monitoring](docs/screenshots/warranty-monitoring.png)
+```
+
+### Screenshot Upload Checklist
+
+- [ ] Capture 4-6 clear screens (login, dashboards, asset details, warranty view).
+- [ ] Export images as `.png` with readable resolution.
+- [ ] Save images to `docs/screenshots/` using the suggested file names.
+- [ ] Confirm image paths render correctly in GitHub preview.
+- [ ] Commit and push README + screenshot files.
