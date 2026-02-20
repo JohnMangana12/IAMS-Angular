@@ -15,12 +15,12 @@ IAMS is a web-based asset management platform for tracking IT and operational as
 - Angular Material + Bootstrap
 - Node.js / Express
 - JSON Server for local mock data workflows
+- PostgreSQL for backend database
 - Karma + Jasmine for unit testing
 
 ## Project Structure
 
 - `src/app/` — Angular application modules, components, guards, and services
-- `backend/` — Backend service code
 - `server.js` / `server.ts` — Server entry points
 - `db.json` — Local mock data source
 
