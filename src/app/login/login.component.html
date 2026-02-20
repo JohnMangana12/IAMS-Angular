@@ -1,97 +1,108 @@
-<div class="container d-flex align-items-center justify-content-center vh-100">
-  <div class="card w-100" style="max-width: 400px;">
-    <div class="card-body text-center p-4">
-      <!-- Logo -->
-      <img src="assets/emerson3.png" alt="Emerson logo" class="img-fluid mb-3" style="max-width: 150px;">
+<div class="login-container">
+  <mat-card class="login-card">
 
-      <!-- Title -->
-      <h1 class="fs-2 fw-bold mb-4 text-primary">INFRA ASSET MANAGEMENT SYSTEM</h1>
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="assets/emerson3.png" alt="Emerson logo">
+    </div>
 
-      <!-- Login Form -->
+    <!-- Title -->
+    <div class="title-section">
+      <h1>Infra Asset Management</h1>
+    </div>
+
+    <mat-card-content>
       <form [formGroup]="form" (ngSubmit)="login()">
-        <!-- Username Input -->
-        <div class="input-group mb-3">
-          <span class="input-group-text bg-light border-end-0">
-            <i class="bi bi-person-fill fs-3 text-primary"></i>
-          </span>
-          <input
-            id="username"
-            type="text"
-            class="form-control border-start-0 ps-0"
-            formControlName="username"
-            placeholder="Username"
-            [ngbTypeahead]="search"
-            aria-label="Username"
-          />
-        </div>
-        <!-- Password Input -->
-        <div class="input-group mb-3">
-          <span class="input-group-text bg-light border-end-0">
-            <i class="bi bi-lock-fill fs-3 text-primary"></i>
-          </span>
-          <input
-            id="password"
-            type="password"
-            class="form-control border-start-0 ps-0"
-            formControlName="password"
-            placeholder="Password"
-            aria-label="Password"
-          />
-        </div>
 
-        <!-- NEW: Forgot Password Link -->
-        <div class="d-flex justify-content-end mb-3">
-          <a
-            href="javascript:void(0)"
-            class="text-decoration-none small"
-            (click)="openResetModal(resetModal)">
+        <!-- Username Input with Autocomplete -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Username</mat-label>
+          <mat-icon matPrefix class="me-2 text-secondary">person</mat-icon>
+          <input
+            type="text"
+            matInput
+            formControlName="username"
+            [matAutocomplete]="auto"
+            placeholder="Ex. juan.delacruz"
+          >
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let user of filteredUsernames | async" [value]="user">
+              {{ user }}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="form.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Input with Visibility Toggle -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Password</mat-label>
+          <mat-icon matPrefix class="me-2 text-secondary">lock</mat-icon>
+          <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+          >
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Forgot Password Link -->
+        <div class="forgot-pass">
+          <a href="javascript:void(0)" (click)="openResetModal(resetModal)">
             Forgot Password?
           </a>
         </div>
 
         <!-- Login Button -->
-        <div class="d-grid">
-          <button
-            type="submit"
-            class="btn btn-primary btn-lg"
-            [disabled]="!form.valid"
-          >
-            Login
-          </button>
-        </div>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="w-100 login-btn"
+          [disabled]="form.invalid || loading">
+          {{ loading ? 'Logging in...' : 'Login' }}
+        </button>
+
       </form>
-    </div>
-  </div>
+    </mat-card-content>
+  </mat-card>
 </div>
 
-
-<!-- NEW: Reset Password Modal Template -->
+<!-- NgbModal Template (Kept functional logic, just cleaned up UI) -->
 <ng-template #resetModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Reset Password</h4>
+  <div class="modal-header border-0 pb-0">
+    <h4 class="modal-title fw-bold text-primary">Reset Password</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
-    <!-- UPDATED TEXT: Inform the user about the email link -->
-    <p>Enter your username. We will send a password reset link to your registered email address.</p>
+    <p class="text-muted small mb-4">Enter your username. We will send a password reset link to your registered email address.</p>
 
-    <div class="mb-3">
-      <label for="resetUsername" class="form-label">Username</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-person"></i></span>
-        <input
-          type="text"
-          class="form-control"
-          id="resetUsername"
-          [(ngModel)]="resetUsernameStr"
-          placeholder="Enter username"
-          (keydown.enter)="confirmReset(modal)">
-      </div>
+    <div class="mb-2">
+      <label for="resetUsername" class="form-label fw-bold">Username</label>
+      <input
+        type="text"
+        class="form-control form-control-lg bg-light"
+        id="resetUsername"
+        [(ngModel)]="resetUsernameStr"
+        placeholder="Enter username"
+        (keydown.enter)="confirmReset(modal)">
     </div>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
-    <!-- UPDATED LABEL: Changed from "Reset Password" to "Send Reset Link" -->
-    <button type="button" class="btn btn-primary" (click)="confirmReset(modal)">Send Reset Link</button>
+  <div class="modal-footer border-0 pt-0">
+    <button type="button" class="btn btn-light text-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
+    <button type="button" class="btn btn-primary px-4" (click)="confirmReset(modal)">Send Reset Link</button>
   </div>
 </ng-template>

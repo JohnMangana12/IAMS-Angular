@@ -1,43 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-reset-password-confirm',
-  standalone: false, // Set to true if this is a standalone component
-  template: `
-    <div class="container d-flex align-items-center justify-content-center vh-100">
-      <div class="card w-100" style="max-width: 400px;">
-        <div class="card-body p-4">
-          <h2 class="text-center text-primary mb-4">Set New Password</h2>
-
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label class="form-label">New Password</label>
-              <input type="password" class="form-control" formControlName="password" placeholder="Enter new password">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Confirm Password</label>
-              <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm new password">
-            </div>
-
-            <div class="d-grid">
-              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
-                {{ loading ? 'Resetting...' : 'Reset Password' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  `
+  standalone: false,
+  templateUrl: './reset-password-confirm.component.html',
+  styleUrls: ['./reset-password-confirm.component.scss']
 })
 export class ResetPasswordConfirmComponent implements OnInit {
   form: FormGroup;
   token: string = '';
   loading = false;
+
+  // UI States for password visibility toggles
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,40 +26,64 @@ export class ResetPasswordConfirmComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
+    // Initialize form with a custom validator at the group level
     this.form = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
-    });
+    }, { validators: this.passwordMatchValidator });
   }
 
   ngOnInit(): void {
-    // Get token from URL
     this.token = this.route.snapshot.queryParams['token'];
+
+    // Slight UX improvement: don't redirect immediately, show the error state on the screen
+    // or disable the form, but redirection works too.
     if (!this.token) {
-      this.snackBar.open('Invalid password reset link.', 'Close', { duration: 5000 });
+      this.showSnack('Invalid or missing reset token.', 'error');
       this.router.navigate(['/login']);
     }
   }
 
+  // Custom Validator for matching passwords
+  passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      // Set error on the logic, but usually we want to display it on the confirm field
+      return { notSame: true };
+    }
+    return null;
+  };
+
   onSubmit() {
     if (this.form.invalid) return;
 
-    if (this.form.value.password !== this.form.value.confirmPassword) {
-      this.snackBar.open('Passwords do not match.', 'Close', { duration: 3000 });
-      return;
-    }
-
     this.loading = true;
+    // Disable form while loading
+    this.form.disable();
+
     this.authService.confirmPasswordReset(this.token, this.form.value.password).subscribe({
       next: (res) => {
-        this.snackBar.open(res.message, 'Close', { duration: 5000 });
+        this.loading = false;
+        this.showSnack(res.message || 'Password reset successful!', 'success');
         this.router.navigate(['/login']);
       },
       error: (err) => {
         this.loading = false;
-        const msg = err.error?.error || 'Error resetting password.';
-        this.snackBar.open(msg, 'Close', { duration: 5000 });
+        this.form.enable();
+        const msg = err.error?.error || 'Error resetting password. Link may have expired.';
+        this.showSnack(msg, 'error');
       }
+    });
+  }
+
+  // Helper for consistent snackbar styling
+  private showSnack(message: string, type: 'success' | 'error') {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      panelClass: type === 'error' ? ['mat-toolbar', 'mat-warn'] : ['mat-toolbar', 'mat-primary'],
+      verticalPosition: 'top'
     });
   }
 }

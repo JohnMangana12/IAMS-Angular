@@ -67,6 +67,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { LicenseFormModalComponent } from './license-form-modal/license-form-modal.component';
 import { LicenseDetailsModalComponent } from './license-details-modal/license-details-modal.component';
 import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-password-confirm.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 
@@ -138,6 +141,7 @@ import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-pa
 
 
 
+
   ],
   imports: [
     BrowserModule,
@@ -164,6 +168,10 @@ import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-pa
     NgbTypeaheadModule,
     JsonPipe,
     BrowserAnimationsModule,
+    MatCardModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
+
 
 
 
