@@ -84,30 +84,16 @@ I designed and implemented key frontend and integration workflows for this syste
 
 ## Screenshots
 
-Add screenshots to help reviewers quickly understand the product experience.
+These screenshots are included to quickly showcase the current product experience.
 
-Suggested files to add under `docs/screenshots/`:
+### Login Page
 
-- `login.png` — login page
-- `dashboard-admin.png` — admin dashboard
-- `dashboard-user.png` — user dashboard
-- `asset-details.png` — asset details view
-- `warranty-monitoring.png` — warranty monitoring view
+![Login Page](docs/screenshots/Asset%20Management-Login%20Page.png)
 
-Example markdown once images are added:
+### Dashboard
 
-```markdown
-![Login](docs/screenshots/login.png)
-![Admin Dashboard](docs/screenshots/dashboard-admin.png)
-![User Dashboard](docs/screenshots/dashboard-user.png)
-![Asset Details](docs/screenshots/asset-details.png)
-![Warranty Monitoring](docs/screenshots/warranty-monitoring.png)
-```
+![Dashboard](docs/screenshots/Asset%20Management-Dashboard.png)
 
-### Screenshot Upload Checklist
+### Asset List with CRUD Operations
 
-- [ ] Capture 4-6 clear screens (login, dashboards, asset details, warranty view).
-- [ ] Export images as `.png` with readable resolution.
-- [ ] Save images to `docs/screenshots/` using the suggested file names.
-- [ ] Confirm image paths render correctly in GitHub preview.
-- [ ] Commit and push README + screenshot files.
+![Asset List with CRUD Operations](docs/screenshots/Asset%20Management-%20Asset%20list%20with%20CRUD%20Operations.png)
