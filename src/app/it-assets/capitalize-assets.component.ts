@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 // Import your modal components if they are different for capitalize assets
 // If they are the same, keep the imports from asset-list.component.ts
 import { AddAssetsComponent } from '../add-assets/add-assets.component'; // Adjust if needed
@@ -14,7 +14,6 @@ import {
   faTrash,
   faBoxesStacked, // This is used for the main asset title in asset-list
   faDownload,
-  faUpload,
   faPlus,
   faSort,
   faSortUp,
@@ -23,10 +22,7 @@ import {
   faComputer,
 } from '@fortawesome/free-solid-svg-icons';
 import { AssetEditModalComponent } from "../asset-edit-modal/asset-edit-modal.component"; // Adjust if needed
-import { ChangeDetectorRef } from '@angular/core';
-import { ImportConfirmationModalComponent } from '../import-confirmation-modal/import-confirmation-modal.component'; // Adjust if needed
-import { forkJoin, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-capitalize-assets',
@@ -42,7 +38,6 @@ export class CapitalizeAssetsComponent implements OnInit {
   faTrash = faTrash;
   faBoxesStacked = faBoxesStacked; // Using this icon for the main asset view title
   faDownload = faDownload;
-  faUpload = faUpload;
   faPlus = faPlus;
   faSort = faSort;
   faSortUp = faSortUp;
@@ -62,6 +57,7 @@ export class CapitalizeAssetsComponent implements OnInit {
     'CostCenter',
     'Warranty',
     'PoNumber',
+    'EmersonPartNumber',
     // Add others here if you want them to be sortable and visible in headers
     // 'Specification', 'DateAcquired', 'AssetCondition', etc.
   ];
@@ -82,8 +78,7 @@ export class CapitalizeAssetsComponent implements OnInit {
   constructor(
     private _assetService: AssetService,
     private _snackBar: MatSnackBar,
-    private modalService: NgbModal,
-    private cdr: ChangeDetectorRef
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -196,157 +191,6 @@ export class CapitalizeAssetsComponent implements OnInit {
     });
   }
 
-  onFileChange(event: any) {
-    const target = event.target as HTMLInputElement;
-    if (!target.files || target.files.length !== 1) {
-      this._snackBar.open('Please select only one file.', 'Close', { duration: 3000 });
-      return;
-    }
-    this.isLoading = true; // Show loading spinner for upload process
-    const file: File = target.files[0];
-
-    const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
-      try {
-        const binaryString: string = e.target.result;
-        const workbook: XLSX.WorkBook = XLSX.read(binaryString, { type: 'binary', cellDates: true }); // Read dates as Date objects
-        const sheetName: string = workbook.SheetNames[0];
-        const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
-        const data: any[] = XLSX.utils.sheet_to_json(worksheet);
-
-        // Pre-process data for import
-        const processedData = data.map(item => this.preprocessAssetData(item));
-
-        this.importAssets(processedData);
-      } catch (error) {
-        console.error('Error reading Excel file:', error);
-        this._snackBar.open('Error reading Excel file. Please ensure it is a valid .xlsx or .xls file.', 'Close', { duration: 5000 });
-      } finally {
-        // Clear the file input value to allow re-uploading the same file
-        target.value = '';
-        // isLoading will be reset in importAssets finalize or error handling
-      }
-    };
-    reader.onerror = (error) => {
-      console.error('FileReader error:', error);
-      this._snackBar.open('Error reading file.', 'Close', { duration: 3000 });
-      this.isLoading = false;
-      target.value = '';
-    };
-    reader.readAsBinaryString(file);
-  }
-
-  // Helper to preprocess data from Excel
-  preprocessAssetData(item: any): any {
-    const processedItem: any = {};
-    // Map Excel columns to your asset model properties - ensure these keys match your Excel headers
-    processedItem.AssetTag = item['Asset Tag'] || item['AssetTag']; // Handle variations
-    processedItem.Description = item['Description'] || item['description'];
-    processedItem.SerialNumber = item['Serial Number'] || item['SerialNumber'];
-    processedItem.CostCenter = item['Cost Center'] || item['CostCenter'];
-    processedItem.Warranty = item['Warranty'] ? this.formatDateForAPI(item['Warranty']) : null;
-    processedItem.PoNumber = item['PO Number'] || item['PoNumber'];
-    processedItem.Specification = item['Specification'] || item['specification'];
-    processedItem.DateAcquired = item['Date Acquired'] ? this.formatDateForAPI(item['Date Acquired']) : null;
-    processedItem.AssetCondition = item['Asset Condition'] || item['AssetCondition'];
-    processedItem.AssetCategory = item['Asset Category'] || item['AssetCategory'];
-    processedItem.GroupAssetCategory = item['Group Asset Category'] || item['GroupAssetCategory'];
-    processedItem.ScrumTeam = item['Scrum Team'] || item['ScrumTeam'];
-    processedItem.AgileReleaseTrain = item['Agile Release Train'] || item['AgileReleaseTrain'];
-    processedItem.CheckoutTo = item['Checkout To'] || item['CheckoutTo'];
-    processedItem.Location = item['Location'] || item['location'];
-    // Add any other relevant fields based on your Excel headers
-
-    // Ensure specific fields are trimmed if they are strings
-    if (processedItem.AssetTag && typeof processedItem.AssetTag === 'string') processedItem.AssetTag = processedItem.AssetTag.trim();
-    if (processedItem.SerialNumber && typeof processedItem.SerialNumber === 'string') processedItem.SerialNumber = processedItem.SerialNumber.trim();
-    // Add trimming for other relevant string fields if necessary
-
-    return processedItem;
-  }
-
-  // Helper to format dates consistently for API
-  formatDateForAPI(date: any): string | null {
-    if (!date) return null;
-    try {
-      // If XLSX.read with cellDates: true is used, it might already be a Date object
-      if (date instanceof Date) {
-        return formatDate(date, 'yyyy-MM-dd', 'en-US');
-      }
-      // Fallback for string dates if they were not parsed as Date objects by reader
-      return formatDate(new Date(date), 'yyyy-MM-dd', 'en-US');
-    } catch (e) {
-      console.error("Could not format date:", date, e);
-      return null; // Return null if date formatting fails
-    }
-  }
-
-
-  importAssets(assets: any[]) {
-    if (assets.length === 0) {
-      this._snackBar.open('No data found in the Excel file to import.', 'Close', { duration: 3000 });
-      this.isLoading = false;
-      return;
-    }
-
-    let successCount = 0;
-    let failedCount = 0;
-    const importResults: Array<{ asset: any, status: string, message?: string }> = [];
-
-    // Create an array of observables for each asset import
-    const importObservables = assets.map(asset => {
-      // Ensure required fields are present before attempting to add
-      // Adjust these validation rules based on your actual requirements
-      if (!asset.AssetTag || !asset.Description) {
-        failedCount++;
-        importResults.push({ asset, status: 'failed', message: 'Missing required fields (Asset Tag or Description).' });
-        return of(null); // Return an observable that completes immediately
-      }
-
-      return this._assetService.addAsset(asset).pipe(
-        map(() => {
-          successCount++;
-          importResults.push({ asset, status: 'success' });
-          return { asset, status: 'success' };
-        }),
-        catchError(err => {
-          failedCount++;
-          const errorMessage = err.error?.message || err.message || 'Unknown error';
-          console.error('Error importing asset entry:', asset, err);
-          importResults.push({ asset, status: 'failed', message: errorMessage });
-          // Return an observable that emits a specific error object, so forkJoin can continue
-          return of({ asset, status: 'failed', error: err });
-        })
-      );
-    });
-
-    // Use forkJoin to wait for all observables to complete
-    forkJoin(importObservables).pipe(
-      finalize(() => {
-        this.isLoading = false; // Hide loading spinner
-        this.getCapitalizeAssetsData(); // Refresh the asset list
-        this.openImportConfirmationModal(successCount, failedCount, importResults); // Open final confirmation modal with detailed results
-      })
-    ).subscribe({
-      next: (results) => {
-        console.log('All import operations processed.');
-      },
-      error: (err) => {
-        console.error('An unexpected error occurred during bulk import processing:', err);
-        this._snackBar.open('An unexpected error occurred during import.', 'Close', { duration: 5000 });
-      }
-    });
-  }
-
-  // New method to open the import confirmation modal
-  openImportConfirmationModal(success: number, failed: number, results: Array<{ asset: any, status: string, message?: string }>) {
-    // Ensure ImportConfirmationModalComponent is imported and available
-    const modalRef = this.modalService.open(ImportConfirmationModalComponent, { size: 'lg', centered: true });
-    modalRef.componentInstance.successCount = success;
-    modalRef.componentInstance.failedCount = failed;
-    modalRef.componentInstance.results = results; // Pass detailed results for the modal to display
-  }
-
   exportToExcel(): void {
     try {
       // Use the full dataSource for export, not just displayedData
@@ -374,6 +218,9 @@ export class CapitalizeAssetsComponent implements OnInit {
         { key: 'GroupAssetCategory', header: 'Group Asset Category' },
         { key: 'ScrumTeam', header: 'Scrum Team' },
         { key: 'AgileReleaseTrain', header: 'Agile Release Train' },
+        { key: 'EmersonPartNumber', header: 'Emerson Part Number' },
+        { key: 'Comments', header: 'Comments' },
+
       ];
 
       const transformedData = dataToExport.map(item => {

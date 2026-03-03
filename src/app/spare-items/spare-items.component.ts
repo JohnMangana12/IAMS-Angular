@@ -47,8 +47,8 @@ export class SpareItemsComponent implements OnInit {
     'Description',
     'SerialNumber',
     'CostCenter',
-    'Warranty',
     'PoNumber',
+    'EmersonPartNumber',
     // Add/remove other relevant columns for spare items here
     // Example: 'Specification', 'AssetCondition', etc.
   ];
@@ -351,6 +351,8 @@ export class SpareItemsComponent implements OnInit {
           { key: 'GroupAssetCategory', header: 'Group Asset Category' },
           { key: 'ScrumTeam', header: 'Scrum Team' },
           { key: 'AgileReleaseTrain', header: 'Agile Release Train' },
+          { key: 'EmersonPartNumber', header: 'Emerson Part Number' },
+          { key: 'Comments', header: 'Comments' },
           // Add any other relevant fields you want to export
         ];
 

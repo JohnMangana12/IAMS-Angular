@@ -51,8 +51,8 @@
             <th scope="col" (click)="sortData('Description')">Description <fa-icon [icon]="getSortIcon('Description')"></fa-icon></th>
             <th scope="col" (click)="sortData('SerialNumber')">Serial Number <fa-icon [icon]="getSortIcon('SerialNumber')"></fa-icon></th>
             <th scope="col" (click)="sortData('CostCenter')">Cost Center <fa-icon [icon]="getSortIcon('CostCenter')"></fa-icon></th>
-            <th scope="col" (click)="sortData('Warranty')">Warranty <fa-icon [icon]="getSortIcon('Warranty')"></fa-icon></th>
             <th scope="col" (click)="sortData('PoNumber')">PO Number <fa-icon [icon]="getSortIcon('PoNumber')"></fa-icon></th>
+            <th scope="col" (click)="sortData('EmersonPartNumber')">Emerson Part Number <fa-icon [icon]="getSortIcon('EmersonPartNumber')"></fa-icon></th>
             <!-- Add/remove columns as needed for your spare items -->
             <th scope="col" class="text-center">Action</th>
           </tr>
@@ -64,8 +64,8 @@
             <td>{{ asset.Description }}</td>
             <td>{{ asset.SerialNumber }}</td>
             <td>{{ asset.CostCenter }}</td>
-            <td>{{ asset.Warranty | date:'shortDate' }}</td> <!-- Use Bootstrap's date pipe format -->
             <td>{{ asset.PoNumber }}</td>
+            <td>{{ asset.EmersonPartNumber }}</td>
             <td class="action-buttons-cell text-center"> <!-- Center action buttons -->
               <!-- Adjusted button styles for consistency -->
               <button type="button" class="btn btn-outline-primary btn-sm me-1" (click)="openEditAssetsForm(asset); $event.stopPropagation()">
