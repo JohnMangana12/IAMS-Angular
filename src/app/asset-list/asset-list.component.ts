@@ -244,6 +244,9 @@ export class AssetListComponent implements OnInit {
       processedItem.AgileReleaseTrain = item['Agile Release Train'] || item['AgileReleaseTrain'];
       processedItem.CheckoutTo = item['Checkout To'] || item['CheckoutTo'];
       processedItem.Location = item['Location'] || item['location'];
+      processedItem.EmersonPartNumber = item['Emerson Part Number'] || item['EmersonPartNumber'];
+      processedItem.Comments = item['Comments'] || item['comments'];
+
       // Add any other relevant fields based on your Excel headers
 
       // Ensure numeric fields are numbers if they are valid numbers in Excel
@@ -366,6 +369,8 @@ export class AssetListComponent implements OnInit {
         { key: 'GroupAssetCategory', header: 'Group Asset Category' },
         { key: 'ScrumTeam', header: 'Scrum Team' },
         { key: 'AgileReleaseTrain', header: 'Agile Release Train' },
+        { key: 'EmersonPartNumber', header: 'Emerson Part Number' },
+        { key: 'Comments', header: 'Comments' }
       ];
 
       const transformedData = dataToExport.map(item => {
