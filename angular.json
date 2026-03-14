@@ -34,9 +34,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets/emerson3.png",
               "src/assets/server.jpg",
               "src/assets/laptop.jpg",
               "src/assets/monitor.jpg",
+              "src/assets/emerson5.png",
               {
                 "glob": "**/*",
                 "input": "public"
@@ -105,6 +107,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets/emerson3.png",
               {
                 "glob": "**/*",
                 "input": "public"

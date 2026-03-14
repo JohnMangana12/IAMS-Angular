@@ -54,7 +54,8 @@
             <th scope="col" (click)="sortData('Warranty')">Warranty <fa-icon [icon]="getSortIcon('Warranty')"></fa-icon></th>
             <th scope="col" (click)="sortData('PoNumber')">PO Number <fa-icon [icon]="getSortIcon('PoNumber')"></fa-icon></th>
             <!-- Add/remove columns as needed for your spare items -->
-
+            <!-- NEW: Actions Column Header -->
+             <th scope="col" class="action-column">Actions</th>
           </tr>
         </thead>
          <tbody>
@@ -66,10 +67,17 @@
             <td>{{ asset.CostCenter }}</td>
             <td>{{ asset.Warranty | date:'shortDate' }}</td> <!-- Use Bootstrap's date pipe format -->
             <td>{{ asset.PoNumber }}</td>
-
+            <!-- NEW: Action Button Cell-->
+            <td class="action-buttons-cell">
+              <!-- Notice $event is passed to stop the row click from firing-->
+               <button class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" (click)="borrowAsset(asset, $event)" title="Borrow this Asset">
+                <fa-icon [icon]="faHandshake"></fa-icon> Borrow
+               </button>
+            </td>
           </tr>
           <!-- Placeholder for empty table -->
           <tr *ngIf="displayedData.length === 0 && !isLoadingModules && !isLoading">
+            <!-- Ensure colspan is updated to 7 to match new column count -->
             <td colspan="7" class="text-center py-4">No Spare Assets found.</td> <!-- Consistent message -->
           </tr>
         </tbody>

@@ -10,7 +10,7 @@ const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
 
-dotenv.config();
+dotenv.config({ override: true });
 const app = express();
 const port = 3000;
 
@@ -22,18 +22,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// 2. Configure Email Transporter (Add this before routes)
-// Authenticate with Gmail (or any service), but send FROM your Emerson email
+// 2. Configure Email Transporter (Office 365 SMTP)
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.office365.com';
+const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+const SMTP_USER = (process.env.SMTP_USER || process.env.EMERSON_EMAIL || '').trim();
+const SMTP_PASS = (process.env.SMTP_PASS || '').trim();
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // The service that actually sends the email
-    auth:{
-      user: process.env.GMAIL_USER, // Your Gmail address for authentication
-      pass: process.env.GMAIL_APP_PASSWORD // Gmail app-specific password
-    }
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: false,
+    requireTLS: true,
+    auth: SMTP_USER && SMTP_PASS ? {
+      user: SMTP_USER,
+      pass: SMTP_PASS
+    } : undefined
 });
 
-// Your Emerson email (what users will see as sender)
-const SENDER_EMAIL = process.env.EMERSON_EMAIL || 'your.name@emerson.com';
+// Sender identity shown to users (must match mailbox or have Send As permission)
+const SENDER_EMAIL = process.env.SENDER_EMAIL || SMTP_USER || process.env.EMERSON_EMAIL?.trim() || 'iams.internal@emerson.com';
 const SENDER_NAME = process.env.SENDER_NAME || 'IAMS Asset Management';
 
 
@@ -451,6 +458,41 @@ app.get('/assets/warranty-status', async (req, res) => {
   }
 });
 
+// ==========================================
+// NEW: BORROW ASSET ENDPOINT
+// ==========================================
+
+app.put('/assets/:id/borrow', async  (req, res) => {
+  const assetId = req.params.id;
+  const { checkoutTo } = req.body;
+
+  if (!checkoutTo) {
+      return res.status(400).json({ error: 'Borrower name (checkoutTo) is required,' });
+  }
+
+  try {
+      // Update condition to 'In Use' (or whatever your active status is) and assign the user
+      // Adjust 'In Use' to match your actual active condition if it's different (e.g., 'Deployed')
+
+      const query = `
+          UPDATE assets
+          SET "AssetCondition" = 'In Use', "CheckoutTo" = $1
+          WHERE id = $2
+          RETURNING *
+      `;
+      const result = await pool.query(query, [checkoutTo, parseInt(assetId, 10)]);
+
+      if (result.rows.length === 0 ) {
+          return res.status(404).json({ error: 'Asset not found' });
+      }
+      res.status(200).json({ message: 'Asset borrowed successfully', asset: result.rows[0] });
+  } catch (error) {
+      console.error('Error borrowing asset:', error);
+      res.status(500).json({ error: 'Error borrowing asset' });
+  }
+});
+
+
 // -- New user routes for account management --
 
 // Get all users
@@ -710,8 +752,12 @@ app.post('/request-password-reset', async (req, res) => {
             [token, expires, user.id]
         );
 
-        // Create Link (Assumes Angular runs on port 4200)
-        const resetLink = `http://localhost:4200/reset-password-confirm?token=${token}`;
+        const appBaseUrl = (process.env.APP_BASE_URL || process.env.FRONTEND_URL || 'http://localhost:4200').replace(/\/$/, '');
+        const resetLink = `${appBaseUrl}/reset-password-confirm?token=${token}`;
+
+        if (!SMTP_USER || !SMTP_PASS) {
+          return res.status(500).json({ error: 'Email service is not configured. Set SMTP_USER and SMTP_PASS in environment variables.' });
+        }
 
         // Send Email
         const mailOptions = {

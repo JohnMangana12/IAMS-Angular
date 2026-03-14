@@ -9,6 +9,7 @@ import {
   faSort, // Default sort icon
   faSortUp, // Ascending sort icon
   faSortDown, // Descending sort icon
+  faHandshake, // For potential future use (e.g., borrow/return actions)
 } from '@fortawesome/free-solid-svg-icons';
 import { AssetService } from '../services/asset.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,12 +19,13 @@ import { AssetEditModalComponent } from "../asset-edit-modal/asset-edit-modal.co
 import * as XLSX from 'xlsx';
 import { formatDate } from '@angular/common';
 import { AssetDetailsComponent } from "../asset-details/asset-details.component"; // If you have a separate details component
+import { AuthService } from '../auth.service'; // Assuming you have an AuthService to get the current user
 
 @Component({
   selector: 'app-spare-items-users',
   standalone: false,
   templateUrl: './spare-items-users.component.html',
-  styleUrl: './spare-items-users.component.scss'
+  styleUrls: ['./spare-items-users.component.scss']
 })
 export class SpareItemsUsersComponent implements OnInit {
   // Font Awesome Icons - Matching third-party-items component
@@ -35,7 +37,7 @@ export class SpareItemsUsersComponent implements OnInit {
     faSort = faSort; // Default sort icon
     faSortUp = faSortUp; // Ascending sort icon
     faSortDown = faSortDown; // Descending sort icon
-
+    faHandshake = faHandshake; // For potential future use (e.g., borrow/return actions)
     dataSource: any[] = []; // Holds all fetched assets
     displayedData: any[] = []; // Holds data for the current page after filtering/sorting
 
@@ -65,13 +67,14 @@ export class SpareItemsUsersComponent implements OnInit {
     // Loading states
     isLoading: boolean = false; // For file uploads/downloads or specific actions
     isLoadingModules: boolean = false; // For initial data load
-    readonly MIN_LOADING_DURATION_MS = 500; // Minimum time to show loading indicator
+    readonly MIN_LOADING_DURATION_MS = 1500; // Minimum time to show loading indicator
 
     constructor(
       private _assetService: AssetService,
       private _snackBar: MatSnackBar,
       private modalService: NgbModal,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -406,4 +409,38 @@ export class SpareItemsUsersComponent implements OnInit {
           this._snackBar.open('Error exporting to Excel!', 'Close', { duration: 3000, verticalPosition: 'bottom' });
         }
       }
+// --- NEW: Borrow Logic ---
+  borrowAsset(asset: any, event: Event) {
+      event.stopPropagation(); // Prevent the row click (details modal) from opening
+
+      const username = this.authService.currentUsername;
+
+      if (!username) {
+        this._snackBar.open('Error: Could not identify the logged-in user.', 'Close', { duration: 3000, verticalPosition: 'bottom' });
+        return;
+      }
+
+      if (confirm(`Are you sure you want to borrow this asset for yourself?\n\n${asset.AssetTag} - ${asset.Description}`)) {
+        this.isLoadingModules = true; // Show spinner during update
+
+        this._assetService.borrowAsset(asset.id, username).subscribe({
+          next: () => {
+            this.isLoadingModules = false; // Hide spinner before refreshing
+            this._snackBar.open(`Successfully borrowed ${asset.AssetTag}!`, 'Close', { duration: 3000, verticalPosition: 'bottom' });
+            this.getSpareItems(); // Refresh the list. It will disappear from 'Spare'
+          },
+          error: (err) => {
+            console.error('Error borrowing asset:', err);
+            this._snackBar.open('Failed to borrow asset.', 'Close', { duration: 3000, verticalPosition: 'bottom' });
+            this.isLoadingModules = false;
+          }
+        });
+      }
     }
+
+
+}
+
+
+
+

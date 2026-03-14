@@ -91,4 +91,9 @@ export class AssetService {
   deleteLicense(id: number): Observable<any> {
     return this.http.delete(`${this.licensesUrl}/${id}`);
   }
+
+ // Add this inside the AssetService class
+  borrowAsset(id: number, checkoutTo: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}/borrow`, { checkoutTo });
+  }
 }
