@@ -37,7 +37,7 @@
 
 /* General Layout & Theme */
 .header {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 2px 4px rgba(236, 233, 233, 0.1); /* Subtle shadow */
   position: sticky;
   top: 0;
   z-index: 10;
@@ -58,7 +58,7 @@
       color: #495057; /* Darker grey */
     }
     fa-icon {
-      font-size: 2rem; /* Adjust icon size */
+      font-size: rem; /* Adjust icon size */
       color: #0d6efd; /* Bootstrap primary color for icon */
     }
   }
@@ -202,7 +202,7 @@
     &.action-buttons-cell {
       text-align: center; /* Center buttons */
       white-space: nowrap; /* Ensure buttons stay on one line */
-      max-width: 120px; /* Give actions a fixed width */
+      max-width: 150px; /* Give actions a fixed width */
     }
   }
 
@@ -231,7 +231,7 @@
 }
 // Add this new rule for the fa-icon within the action-buttons-cell
 .action-buttons-cell fa-icon {
-    font-size: 20px; /* Changed from 18px to match account-management */
+    font-size: 100px; /* Changed from 18px to match account-management */
     vertical-align: middle; /* Keep or add this for better alignment */
 }
 
@@ -276,7 +276,7 @@
   }
 
   .btn-sm {
-      width: 35px; /* Fixed size for action buttons */
+      width: 110px; /* Fixed size for action buttons */
       height: 35px;
       fa-icon {
           font-size: 1.1rem; /* Icon size */

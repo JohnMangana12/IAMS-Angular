@@ -471,12 +471,12 @@ app.put('/assets/:id/borrow', async  (req, res) => {
   }
 
   try {
-      // Update condition to 'In Use' (or whatever your active status is) and assign the user
-      // Adjust 'In Use' to match your actual active condition if it's different (e.g., 'Deployed')
+      // Update condition to 'Good' and assign the user
+      // Adjust 'Good' to match your actual active condition if it's different (e.g., 'Deployed')
 
       const query = `
           UPDATE assets
-          SET "AssetCondition" = 'In Use', "CheckoutTo" = $1
+          SET "AssetCondition" = 'Good', "CheckoutTo" = $1
           WHERE id = $2
           RETURNING *
       `;
