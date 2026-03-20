@@ -225,7 +225,7 @@ app.get('/assets/summary', async (req, res) => {
                 COUNT(*) FILTER (WHERE "AssetCategory" IN ('Desktop', 'Workstation')) AS desktops,
                 COUNT(*) FILTER (WHERE "GroupAssetCategory" = 'Delta V Hardware') AS deltaV,
                 COUNT(*) FILTER (WHERE "AssetCategory" = 'Laptop') AS laptops
-            FROM assets
+            FROM assets WHERE "AssetCondition" = 'Good';
         `;
         const result = await pool.query(query);
         const counts = result.rows[0];
@@ -419,7 +419,7 @@ app.get('/assets/warranty-status', async (req, res) => {
               COUNT(*) FILTER (WHERE "AssetCategory" IN ('Rack Type Server', 'Tower Type Server') AND "Warranty" IS NOT NULL AND "Warranty" >= NOW() ${agileReleaseTrain ? 'AND "AgileReleaseTrain" = $7' : ''}) AS server_has_warranty,
               COUNT(*) FILTER (WHERE "AssetCategory" IN ('Rack Type Server', 'Tower Type Server') AND ("Warranty" IS NULL OR "Warranty" < NOW()) ${agileReleaseTrain ? 'AND "AgileReleaseTrain" = $8' : ''}) AS server_no_warranty
             FROM
-              assets;
+              assets WHERE "AssetCondition" = 'Good';
           `;
     let params = [];
     if (agileReleaseTrain) {
