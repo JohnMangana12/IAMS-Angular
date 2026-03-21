@@ -33,4 +33,23 @@
       }
     }
   }
+
+  .nav-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 10px 20px;
+  }
+
+  .nav-section-label {
+    font-family: "Exo", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #a78bfa;
+    padding: 10px 50px 5px;
+
+    @media only screen and (max-width: 778px) {
+      display: none;
+    }
+  }
 }

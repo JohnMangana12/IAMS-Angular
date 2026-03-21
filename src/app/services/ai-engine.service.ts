@@ -370,8 +370,9 @@ export class AiEngineService {
     };
     for (const [keyword, category] of Object.entries(categories)) {
       if (lowerQuery.includes(keyword)) {
-        filters['GroupAssetCategory'] = category;
+        filters['AssetCategory'] = category;
         matchedAssets = matchedAssets.filter(a =>
+          (a.AssetCategory || '').toLowerCase().includes(keyword) ||
           (a.GroupAssetCategory || '').toLowerCase().includes(keyword) ||
           (a.Description || '').toLowerCase().includes(keyword)
         );
@@ -395,6 +396,21 @@ export class AiEngineService {
     if (lowerQuery.includes('available') || lowerQuery.includes('unassigned')) {
       filters['CheckoutTo'] = 'Available';
       matchedAssets = matchedAssets.filter(a => !a.CheckoutTo || a.CheckoutTo.trim() === '');
+    } else if (lowerQuery.includes('belong to') || lowerQuery.includes('checked out to') || lowerQuery.includes('assigned to')) {
+      const patterns = [/belong(?:s|ing)?\s+to\s+(.+?)(?:\s+(?:with|in|that|who)\b|$)/i,
+                        /checked\s+out\s+to\s+(.+?)(?:\s+(?:with|in|that|who)\b|$)/i,
+                        /assigned\s+to\s+(.+?)(?:\s+(?:with|in|that|who)\b|$)/i];
+      for (const pattern of patterns) {
+        const match = query.match(pattern);
+        if (match) {
+          const searchName = match[1].trim().toLowerCase();
+          filters['CheckoutTo'] = match[1].trim();
+          matchedAssets = matchedAssets.filter(a =>
+            (a.CheckoutTo || '').toLowerCase().includes(searchName)
+          );
+          break;
+        }
+      }
     }
 
     if (lowerQuery.includes('my assets') || lowerQuery.includes('my asset')) {

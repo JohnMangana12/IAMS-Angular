@@ -38,12 +38,17 @@ export class AiChatComponent implements OnInit, OnDestroy {
 
 
   exampleQueries = [
-    'Show all defective laptops',
-    'Which assets have warranty expiring next 3 months?',
-    'Find disposed assets',
+    'Show all servers',
     'Show all assets',
+    'Show all desktops',
+    'Which assets have warranty expiring next 3 months?',
     'Assets in good condition',
-    'Laptops that are available'
+    'show all laptops with expiring warranty',
+    'show all defective laptops',
+    'Find available assets',
+    'show all assets belong to Manila Infra Team',
+    'show all assets belong to Manila Infra Team with expiring warranty',
+    'show all assets belong to Manila Infra Team in good condition',
   ];
 
 

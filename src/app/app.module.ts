@@ -30,7 +30,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import { ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { LayoutComponent } from './layout/layout.component';
-import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient, withFetch, } from '@angular/common/http';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -40,7 +40,7 @@ import { AssetDetailsComponent } from './asset-details/asset-details.component';
 import { NgbModule, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'; // Import MatSnackBarModule
 import { FormsModule } from '@angular/forms';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, SlicePipe } from '@angular/common';
 import { AssetEditModalComponent } from "./asset-edit-modal/asset-edit-modal.component";
 import { LicensesComponent } from './licenses/licenses.component';
 import { CapitalizeAssetsComponent } from './it-assets/capitalize-assets.component';
@@ -179,6 +179,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatAutocompleteModule,
     MatTooltipModule,
     MatTabsModule,
+    SlicePipe,
 
 
 
