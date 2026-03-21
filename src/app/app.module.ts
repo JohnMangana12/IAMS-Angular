@@ -70,6 +70,10 @@ import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-pa
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AiChatComponent } from './ai-chat/ai-chat.component';
+import { AiRiskScoreComponent } from './ai-risk-score/ai-risk-score.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 
@@ -129,6 +133,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     LicenseFormModalComponent,
     LicenseDetailsModalComponent,
     ResetPasswordConfirmComponent,
+    AiChatComponent,
+    AiRiskScoreComponent,
 
 
 
@@ -171,6 +177,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatCardModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    MatTooltipModule,
+    MatTabsModule,
 
 
 
@@ -197,6 +205,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
       { path: 'green-assets', component: GreenAssetsComponent },
       { path: 'spare-items-users', component: SpareItemsUsersComponent },
       { path: 'warranty-monitoring-users', component: WarrantyMonitoringUsersComponent },
+      { path: 'ai-chat', component: AiChatComponent },
 
     ]),
                 NgbModule

@@ -22,6 +22,7 @@ import { MyAssetsComponent } from './my-assets/my-assets.component';
 // --- Import your Asset Detail Component ---
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
 import { ResetPasswordConfirmComponent } from './reset-password-confirm/reset-password-confirm.component';
+import { AiChatComponent } from './ai-chat/ai-chat.component';
 
 const routes: Routes = [
   { path: 'reset-password-confirm', component: ResetPasswordConfirmComponent },
@@ -31,6 +32,9 @@ const routes: Routes = [
   // *** NEW ROUTE FOR PASSWORD CHANGE ***
   { path: 'change-password', component: ChangePasswordComponent },
   // *** END NEW ROUTE ***
+
+  // AI Intelligence Center Routes
+  { path: 'ai-chat', component: AiChatComponent, canActivate: [AuthGuard] },
 
   // Admin Dashboard Branch
   {

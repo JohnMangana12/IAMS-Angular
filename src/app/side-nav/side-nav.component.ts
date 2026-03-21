@@ -24,6 +24,7 @@ import {
   faFileInvoice,
   faCertificate,
   faBoxesStacked,
+  faComments,
 
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -55,6 +56,7 @@ export class SideNavComponent implements OnInit {
   faFileInvoice= faFileInvoice;
   faCertificate= faCertificate;
   faBoxesStacked= faBoxesStacked;
+  faComments = faComments;
 
 
   constructor(

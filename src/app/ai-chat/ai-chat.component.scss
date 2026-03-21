@@ -1,0 +1,385 @@
+/* General Layout & Theme */
+.header {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa; /* Light background, matching spare-items */
+}
+
+/* Main container with flex properties */
+.main-container {
+  display: flex;
+  height: calc(100vh - 70px); /* Subtract the header height */
+  overflow: hidden; /* Prevent the entire container from scrolling */
+}
+
+/* Side Nav Styling */
+.side-nav {
+  width: 400px;
+  min-width: 350px;
+  background-color: #343a40; /* Dark Bootstrap color */
+  color: #fff;
+  box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.5);
+  overflow-y: auto; /* Enable scroll if content overflows */
+
+  @media only screen and (max-width: 1600px) {
+    width: 300px;
+    min-width: 200px;
+  }
+}
+
+/* Main Content Area Styling */
+.main-content {
+  padding: 20px 25px; /* More padding for main content, matching spare-items */
+  background-color: #ffffff; /* White background for content area */
+  overflow-y: auto; /* Enable scrolling for the main content area */
+  display: flex; /* Use flex to manage internal layout */
+  flex-direction: column; /* Stack children vertically */
+  flex-grow: 1; /* Allow content to grow */
+}
+
+/* Toolbar Styling - Mimicking spare-items */
+.my-toolbar {
+  background-color: #ffffff; /* White background */
+  border-bottom: 1px solid #dee2e6; /* Subtle separator */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Lighter shadow for toolbar */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Nicer font */
+  color: #4b4b4b; /* Darker text color */
+  padding: 1rem 1.5rem; /* Adjusted padding */
+  margin-bottom: 1.5rem; /* Space below toolbar */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 0.75rem; /* Space between elements when wrapping */
+
+  .toolbar-title {
+    display: flex;
+    align-items: center;
+
+
+    h1 {
+      font-size: 2rem; /* Title font size */
+      font-weight: 600; /* Medium bold */
+      color: #495057; /* Darker grey text */
+      margin-bottom: 0; /* Remove default margin */
+      margin-right: 38rem; /* Space between icon and title */
+
+    }
+
+    i {
+      font-size: 2rem; /* Icon size matching h1 */
+      color: #0d6efd; /* Bootstrap primary color for icon */
+      margin-right: 0rem; /* Space between icon and title */
+    }
+  }
+}
+.nlp-badge {
+  background: linear-gradient(135deg, #00b4d8, #6f42c1);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 16px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.btn-clear {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  &:hover { background: #e9ecef; }
+}
+
+// Examples
+.example-queries {
+  margin-bottom: 16px;
+  .examples-label {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 8px;
+  }
+}
+
+.examples-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.example-chip {
+  background: white;
+  border: 1px solid #dee2e6;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #495057;
+  transition: all 0.2s;
+  i { color: #6f42c1; margin-right: 4px; }
+  &:hover {
+    background: #6f42c1;
+    color: white;
+    border-color: #6f42c1;
+    i { color: white; }
+  }
+}
+
+// Messages
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  max-width: 90%;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  .message-content {
+    background: #6f42c1;
+    color: white;
+    border-radius: 16px 16px 4px 16px;
+  }
+  .message-time { text-align: right; color: rgba(255,255,255,0.7); }
+}
+
+.message-ai {
+  align-self: flex-start;
+  .message-content {
+    background: white;
+    border-radius: 16px 16px 16px 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+  .message-user & { background: #6f42c1; color: white; }
+  .message-ai & { background: #e9ecef; color: #6f42c1; }
+}
+
+.message-content {
+  padding: 12px 16px;
+  max-width: 100%;
+}
+
+.message-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #adb5bd;
+  margin-top: 6px;
+}
+
+// Query Results
+.query-result {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.intent-badge {
+  background: #e8dff5;
+  color: #6f42c1;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  i { margin-right: 4px; }
+}
+
+.filter-tag {
+  background: #f0f0f0;
+  color: #495057;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.result-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #28a745;
+  margin-bottom: 8px;
+  i { margin-right: 4px; }
+}
+
+.result-table {
+  overflow-x: auto;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    thead {
+      background: #f8f9fa;
+      th {
+        padding: 8px 10px;
+        font-weight: 700;
+        color: #495057;
+        text-align: left;
+        font-size: 11px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #e9ecef;
+      }
+    }
+    tbody tr {
+      border-bottom: 1px solid #f0f0f0;
+      &:hover { background: #f8f9fa; }
+      td {
+        padding: 8px 10px;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.asset-tag { font-weight: 700; color: #6f42c1; }
+
+.condition-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  &.condition-good { background: #d4edda; color: #155724; }
+  &.condition-defective { background: #f8d7da; color: #721c24; }
+  &.condition-fair { background: #fff3cd; color: #856404; }
+  &.condition-for-disposal { background: #f5c6cb; color: #721c24; }
+  &.condition-spare { background: #d6d8db; color: #383d41; }
+}
+
+.more-results {
+  text-align: center;
+  padding: 8px;
+  color: #6c757d;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.no-results {
+  text-align: center;
+  padding: 16px;
+  color: #6c757d;
+  i { font-size: 24px; margin-right: 8px; }
+}
+
+.suggestions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  .suggestions-label {
+    font-size: 11px;
+    color: #6c757d;
+    font-weight: 600;
+  }
+}
+
+.suggestion-chip {
+  background: #f0f0f0;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #6f42c1;
+  transition: all 0.2s;
+  &:hover { background: #e8dff5; }
+}
+
+// Typing Indicator
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+  span {
+    width: 8px;
+    height: 8px;
+    background: #6f42c1;
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite;
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+// Input
+.chat-input {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #e9ecef;
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 24px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+    &:focus { border-color: #6f42c1; }
+    &:disabled { background: #f8f9fa; }
+  }
+}
+
+.btn-send {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #6f42c1;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  &:hover:not(:disabled) { background: #5a32a3; transform: scale(1.05); }
+  &:disabled { opacity: 0.5; cursor: default; }
+}

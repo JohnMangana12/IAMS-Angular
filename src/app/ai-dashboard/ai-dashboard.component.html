@@ -1,0 +1,429 @@
+<div class="ai-dashboard-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="ai-spinner"></div>
+      <h3>AI Engine Analyzing Assets...</h3>
+      <p>Running predictive models, anomaly detection, and lifecycle optimization</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="ai-header" *ngIf="!isLoading">
+    <div class="ai-header-left">
+      <h2><i class="bi bi-cpu"></i> AI Intelligence Center</h2>
+      <span class="ai-badge">PATENT-PENDING TECHNOLOGY</span>
+    </div>
+    <button class="btn-refresh" (click)="loadAiAnalysis()">
+      <i class="bi bi-arrow-clockwise"></i> Re-analyze
+    </button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="ai-tabs" *ngIf="!isLoading">
+    <button [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
+      <i class="bi bi-grid-3x3-gap"></i> Overview
+    </button>
+    <button [class.active]="activeTab === 'risks'" (click)="setTab('risks')">
+      <i class="bi bi-shield-exclamation"></i> Risk Scores
+      <span class="badge-count critical" *ngIf="summary && summary.criticalRiskCount > 0">{{ summary.criticalRiskCount }}</span>
+    </button>
+    <button [class.active]="activeTab === 'anomalies'" (click)="setTab('anomalies')">
+      <i class="bi bi-exclamation-triangle"></i> Anomalies
+      <span class="badge-count warning" *ngIf="summary && summary.anomalyCount > 0">{{ summary.anomalyCount }}</span>
+    </button>
+    <button [class.active]="activeTab === 'lifecycle'" (click)="setTab('lifecycle')">
+      <i class="bi bi-recycle"></i> Lifecycle Optimizer
+    </button>
+    <button [class.active]="activeTab === 'budget'" (click)="setTab('budget')">
+      <i class="bi bi-graph-up-arrow"></i> Budget Forecast
+    </button>
+  </div>
+
+  <!-- ========== OVERVIEW TAB ========== -->
+  <div *ngIf="activeTab === 'overview' && !isLoading && summary" class="tab-content">
+    <!-- Health Score Hero -->
+    <div class="health-hero">
+      <div class="health-circle" [style.borderColor]="getHealthColor(summary.healthScore)">
+        <div class="health-score" [style.color]="getHealthColor(summary.healthScore)">
+          {{ summary.healthScore }}
+        </div>
+        <div class="health-label">Fleet Health</div>
+      </div>
+      <div class="health-details">
+        <h3>AI Fleet Health Assessment</h3>
+        <p>Composite score based on asset condition, warranty coverage, age distribution, and utilization patterns.</p>
+        <div class="health-factors">
+          <div class="factor">
+            <span class="factor-label">Total Assets</span>
+            <span class="factor-value">{{ summary.totalAssets }}</span>
+          </div>
+          <div class="factor">
+            <span class="factor-label">Avg Risk Score</span>
+            <span class="factor-value" [style.color]="getRiskColor(summary.avgRiskScore >= 50 ? 'High' : 'Low')">
+              {{ summary.avgRiskScore }}
+            </span>
+          </div>
+          <div class="factor">
+            <span class="factor-label">Warranty Expiring (3mo)</span>
+            <span class="factor-value warning-text">{{ summary.warrantyExpiringCount }}</span>
+          </div>
+          <div class="factor">
+            <span class="factor-label">12-Month Projected Spend</span>
+            <span class="factor-value">{{ formatCurrency(summary.totalProjectedSpend) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card critical">
+        <div class="card-icon"><i class="bi bi-exclamation-octagon"></i></div>
+        <div class="card-content">
+          <div class="card-number">{{ summary.criticalRiskCount }}</div>
+          <div class="card-label">Critical Risk Assets</div>
+        </div>
+      </div>
+      <div class="summary-card warning">
+        <div class="card-icon"><i class="bi bi-exclamation-triangle"></i></div>
+        <div class="card-content">
+          <div class="card-number">{{ summary.highRiskCount }}</div>
+          <div class="card-label">High Risk Assets</div>
+        </div>
+      </div>
+      <div class="summary-card info">
+        <div class="card-icon"><i class="bi bi-search"></i></div>
+        <div class="card-content">
+          <div class="card-number">{{ summary.anomalyCount }}</div>
+          <div class="card-label">Anomalies Detected</div>
+        </div>
+      </div>
+      <div class="summary-card danger">
+        <div class="card-icon"><i class="bi bi-arrow-repeat"></i></div>
+        <div class="card-content">
+          <div class="card-number">{{ summary.replaceNowCount }}</div>
+          <div class="card-label">Replace Immediately</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Risks Preview -->
+    <div class="preview-section" *ngIf="riskScores.length > 0">
+      <h4><i class="bi bi-shield-fill-exclamation"></i> Top Risk Assets</h4>
+      <div class="preview-list">
+        <div class="preview-item" *ngFor="let risk of riskScores.slice(0, 5)">
+          <div class="risk-indicator" [style.backgroundColor]="getRiskColor(risk.riskLevel)"></div>
+          <div class="preview-details">
+            <strong>{{ risk.assetTag }}</strong> — {{ risk.description }}
+            <div class="preview-meta">
+              Risk: {{ risk.overallRisk }}% | {{ risk.riskLevel }} |
+              Confidence: {{ (risk.confidenceScore * 100).toFixed(0) }}%
+            </div>
+          </div>
+          <div class="risk-score-badge" [style.backgroundColor]="getRiskColor(risk.riskLevel)">
+            {{ risk.overallRisk }}
+          </div>
+        </div>
+      </div>
+      <button class="btn-see-all" (click)="setTab('risks')">View All Risk Scores →</button>
+    </div>
+
+    <!-- Top Anomalies Preview -->
+    <div class="preview-section" *ngIf="anomalies.length > 0">
+      <h4><i class="bi bi-lightning-fill"></i> Recent Anomalies</h4>
+      <div class="preview-list">
+        <div class="preview-item" *ngFor="let anomaly of anomalies.slice(0, 3)">
+          <div class="risk-indicator" [style.backgroundColor]="getSeverityColor(anomaly.severity)"></div>
+          <div class="preview-details">
+            <strong>{{ anomaly.title }}</strong>
+            <div class="preview-meta">{{ anomaly.description }}</div>
+          </div>
+          <span class="severity-badge" [style.backgroundColor]="getSeverityColor(anomaly.severity)">
+            {{ anomaly.severity }}
+          </span>
+        </div>
+      </div>
+      <button class="btn-see-all" (click)="setTab('anomalies')">View All Anomalies →</button>
+    </div>
+  </div>
+
+  <!-- ========== RISKS TAB ========== -->
+  <div *ngIf="activeTab === 'risks' && !isLoading" class="tab-content">
+    <div class="tab-header">
+      <h3><i class="bi bi-shield-exclamation"></i> Predictive Asset Failure Engine</h3>
+      <div class="filter-group">
+        <button [class.active]="riskFilter === 'all'" (click)="riskFilter = 'all'; riskPage = 1">All</button>
+        <button [class.active]="riskFilter === 'Critical'" (click)="riskFilter = 'Critical'; riskPage = 1"
+                class="filter-critical">Critical</button>
+        <button [class.active]="riskFilter === 'High'" (click)="riskFilter = 'High'; riskPage = 1"
+                class="filter-high">High</button>
+        <button [class.active]="riskFilter === 'Medium'" (click)="riskFilter = 'Medium'; riskPage = 1"
+                class="filter-medium">Medium</button>
+        <button [class.active]="riskFilter === 'Low'" (click)="riskFilter = 'Low'; riskPage = 1"
+                class="filter-low">Low</button>
+      </div>
+    </div>
+
+    <div class="risk-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Asset Tag</th>
+            <th>Description</th>
+            <th>Risk Score</th>
+            <th>Level</th>
+            <th>Top Factor</th>
+            <th>Predicted Failure</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let risk of filteredRisks">
+            <td class="asset-tag">{{ risk.assetTag }}</td>
+            <td>{{ risk.description }}</td>
+            <td>
+              <div class="risk-bar-cell">
+                <div class="risk-bar" [style.width]="risk.overallRisk + '%'"
+                     [style.backgroundColor]="getRiskColor(risk.riskLevel)"></div>
+                <span>{{ risk.overallRisk }}%</span>
+              </div>
+            </td>
+            <td>
+              <span class="level-badge" [style.backgroundColor]="getRiskColor(risk.riskLevel)">
+                {{ risk.riskLevel }}
+              </span>
+            </td>
+            <td>{{ risk.factors[0].name }} ({{ risk.factors[0].score.toFixed(0) }})</td>
+            <td>{{ risk.predictedFailureDate ? (risk.predictedFailureDate | date:'MMM yyyy') : 'N/A' }}</td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-fill" [style.width]="(risk.confidenceScore * 100) + '%'"></div>
+                <span>{{ (risk.confidenceScore * 100).toFixed(0) }}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalFilteredRisks > riskPageSize">
+      <button (click)="riskPage = riskPage - 1" [disabled]="riskPage <= 1">← Prev</button>
+      <span>Page {{ riskPage }} of {{ mathCeil(totalFilteredRisks / riskPageSize) }}</span>
+      <button (click)="riskPage = riskPage + 1"
+              [disabled]="riskPage >= mathCeil(totalFilteredRisks / riskPageSize)">Next →</button>
+    </div>
+
+    <!-- Recommendation Panel -->
+    <ng-container *ngIf="filteredRisks.length > 0">
+      <div class="recommendation-panel">
+        <h4>AI Recommendation for Top Risk Asset</h4>
+        <p>{{ filteredRisks[0].recommendedAction }}</p>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- ========== ANOMALIES TAB ========== -->
+  <div *ngIf="activeTab === 'anomalies' && !isLoading" class="tab-content">
+    <div class="tab-header">
+      <h3><i class="bi bi-exclamation-triangle"></i> Anomaly Detection System</h3>
+      <div class="filter-group">
+        <button [class.active]="anomalyFilter === 'all'" (click)="anomalyFilter = 'all'">All</button>
+        <button [class.active]="anomalyFilter === 'critical'" (click)="anomalyFilter = 'critical'"
+                class="filter-critical">Critical</button>
+        <button [class.active]="anomalyFilter === 'high'" (click)="anomalyFilter = 'high'"
+                class="filter-high">High</button>
+        <button [class.active]="anomalyFilter === 'medium'" (click)="anomalyFilter = 'medium'"
+                class="filter-medium">Medium</button>
+      </div>
+    </div>
+
+    <div class="anomaly-list" *ngIf="filteredAnomalies.length > 0">
+      <div class="anomaly-card" *ngFor="let anomaly of filteredAnomalies"
+           [class]="'anomaly-card severity-' + anomaly.severity">
+        <div class="anomaly-header">
+          <div class="anomaly-type-badge">
+            <i [class]="anomaly.dimension === 'temporal' ? 'bi bi-clock-history' :
+                        anomaly.dimension === 'organizational' ? 'bi bi-diagram-3' : 'bi bi-fingerprint'"></i>
+            {{ anomaly.dimension | uppercase }}
+          </div>
+          <span class="severity-badge" [style.backgroundColor]="getSeverityColor(anomaly.severity)">
+            {{ anomaly.severity | uppercase }} — Score: {{ anomaly.score }}
+          </span>
+        </div>
+        <h4>{{ anomaly.title }}</h4>
+        <p>{{ anomaly.description }}</p>
+        <div class="anomaly-footer">
+          <div class="affected-count">
+            <i class="bi bi-box-seam"></i> {{ anomaly.affectedAssets.length }} asset(s) affected
+          </div>
+          <div class="anomaly-action">
+            <strong>Suggested Action:</strong> {{ anomaly.suggestedAction }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filteredAnomalies.length === 0">
+      <i class="bi bi-check-circle"></i>
+      <h4>No Anomalies Detected</h4>
+      <p>All asset patterns are within normal parameters.</p>
+    </div>
+  </div>
+
+  <!-- ========== LIFECYCLE TAB ========== -->
+  <div *ngIf="activeTab === 'lifecycle' && !isLoading" class="tab-content">
+    <div class="tab-header">
+      <h3><i class="bi bi-recycle"></i> Intelligent Lifecycle Cost Optimizer</h3>
+      <div class="filter-group">
+        <button [class.active]="lifecycleFilter === 'all'" (click)="lifecycleFilter = 'all'; lifecyclePage = 1">All</button>
+        <button [class.active]="lifecycleFilter === 'replace'" (click)="lifecycleFilter = 'replace'; lifecyclePage = 1"
+                class="filter-critical">Replace</button>
+        <button [class.active]="lifecycleFilter === 'monitor'" (click)="lifecycleFilter = 'monitor'; lifecyclePage = 1"
+                class="filter-medium">Monitor</button>
+        <button [class.active]="lifecycleFilter === 'keep'" (click)="lifecycleFilter = 'keep'; lifecyclePage = 1"
+                class="filter-low">Keep</button>
+      </div>
+    </div>
+
+    <div class="lifecycle-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Asset Tag</th>
+            <th>Description</th>
+            <th>Age (mo)</th>
+            <th>Remaining Life</th>
+            <th>Monthly Depreciation</th>
+            <th>Warranty Gap Cost</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let lc of filteredLifecycle">
+            <td class="asset-tag">{{ lc.assetTag }}</td>
+            <td>{{ lc.description }}</td>
+            <td>{{ lc.currentAge }}</td>
+            <td>
+              <div class="life-bar-cell">
+                <div class="life-bar" [style.width]="getBarWidth(lc.estimatedRemainingLife, 84)"
+                     [style.backgroundColor]="getRecommendationColor(lc.recommendation)"></div>
+                <span>{{ lc.estimatedRemainingLife }} mo</span>
+              </div>
+            </td>
+            <td>{{ formatCurrency(lc.monthlyDepreciation) }}</td>
+            <td [class.warning-text]="lc.warrantyGapCost > 0">
+              {{ formatCurrency(lc.warrantyGapCost) }}
+            </td>
+            <td>
+              <span class="decision-badge" [style.backgroundColor]="getRecommendationColor(lc.recommendation)">
+                {{ lc.recommendation | uppercase }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalFilteredLifecycle > lifecyclePageSize">
+      <button (click)="lifecyclePage = lifecyclePage - 1" [disabled]="lifecyclePage <= 1">← Prev</button>
+      <span>Page {{ lifecyclePage }} of {{ Math.ceil(totalFilteredLifecycle / lifecyclePageSize) }}</span>
+      <button (click)="lifecyclePage = lifecyclePage + 1"
+              [disabled]="lifecyclePage >= Math.ceil(totalFilteredLifecycle / lifecyclePageSize)">Next →</button>
+    </div>
+
+    <!-- Justification panel -->
+    <ng-container *ngIf="filteredLifecycle.length > 0">
+      <div class="recommendation-panel">
+        <h4>AI Justification — {{ filteredLifecycle[0].assetTag }}</h4>
+        <p>{{ filteredLifecycle[0].justification }}</p>
+        <div *ngIf="filteredLifecycle[0].optimalReplacementDate">
+          <strong>Optimal Replacement Date:</strong>
+          {{ filteredLifecycle[0].optimalReplacementDate | date:'MMMM yyyy' }}
+        </div>
+        <div *ngIf="filteredLifecycle[0].savingsIfReplaced > 0">
+          <strong>Estimated Savings:</strong>
+          {{ formatCurrency(filteredLifecycle[0].savingsIfReplaced) }}
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- ========== BUDGET FORECAST TAB ========== -->
+  <div *ngIf="activeTab === 'budget' && !isLoading" class="tab-content">
+    <div class="tab-header">
+      <h3><i class="bi bi-graph-up-arrow"></i> Predictive Budget Forecasting</h3>
+      <div class="forecast-total">
+        <span>12-Month Forecast:</span>
+        <strong>{{ formatCurrency(totalForecastedSpend) }}</strong>
+      </div>
+    </div>
+
+    <!-- Budget Chart (Bar visualization) -->
+    <div class="budget-chart">
+      <div class="chart-bars">
+        <div class="chart-bar-group" *ngFor="let forecast of budgetForecasts">
+          <div class="bar-stack">
+            <div class="bar-segment acquisitions"
+                 [style.height]="getBarWidth(forecast.newAcquisitions, maxMonthlySpend)"
+                 title="New Acquisitions: {{ formatCurrency(forecast.newAcquisitions) }}">
+            </div>
+            <div class="bar-segment warranty"
+                 [style.height]="getBarWidth(forecast.warrantyRenewals, maxMonthlySpend)"
+                 title="Warranty Renewals: {{ formatCurrency(forecast.warrantyRenewals) }}">
+            </div>
+            <div class="bar-segment replacements"
+                 [style.height]="getBarWidth(forecast.replacementCosts, maxMonthlySpend)"
+                 title="Replacements: {{ formatCurrency(forecast.replacementCosts) }}">
+            </div>
+          </div>
+          <div class="bar-label">{{ forecast.month }}</div>
+          <div class="bar-amount">{{ formatCurrency(forecast.predictedSpend) }}</div>
+          <div class="confidence-dot" [style.opacity]="forecast.confidence"
+               title="Confidence: {{ (forecast.confidence * 100).toFixed(0) }}%">●</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="chart-legend">
+      <div class="legend-item"><span class="legend-color acquisitions"></span> New Acquisitions</div>
+      <div class="legend-item"><span class="legend-color warranty"></span> Warranty Renewals</div>
+      <div class="legend-item"><span class="legend-color replacements"></span> Replacements</div>
+      <div class="legend-item"><span class="legend-color confidence"></span> Confidence Level</div>
+    </div>
+
+    <!-- Detailed Forecast Table -->
+    <div class="forecast-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Predicted Spend</th>
+            <th>New Acquisitions</th>
+            <th>Warranty Renewals</th>
+            <th>Replacements</th>
+            <th>Confidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of budgetForecasts">
+            <td>{{ f.month }}</td>
+            <td><strong>{{ formatCurrency(f.predictedSpend) }}</strong></td>
+            <td>{{ formatCurrency(f.newAcquisitions) }}</td>
+            <td>{{ formatCurrency(f.warrantyRenewals) }}</td>
+            <td>{{ formatCurrency(f.replacementCosts) }}</td>
+            <td>
+              <div class="confidence-bar">
+                <div class="confidence-fill" [style.width]="(f.confidence * 100) + '%'"></div>
+                <span>{{ (f.confidence * 100).toFixed(0) }}%</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

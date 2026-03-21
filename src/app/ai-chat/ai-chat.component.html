@@ -1,0 +1,144 @@
+<!-- account-management.component.html -->
+<div class="header">
+  <app-header></app-header>
+</div>
+
+<!-- Loading indicators -->
+<app-loading-modules *ngIf="isLoadingModules"></app-loading-modules>
+
+<!-- Main container with Bootstrap flex utilities, mirroring spare-items -->
+<div class="main-container d-flex flex-column flex-lg-row">
+
+  <!-- Side Nav -->
+  <div class="side-nav p-3 p-lg-4">
+    <app-side-nav></app-side-nav>
+  </div>
+
+
+<!-- Main Content Area -->
+  <div class="main-content flex-grow-1 d-flex flex-column">
+
+    <!-- Toolbar - Mimicking spare-items toolbar -->
+    <div class="toolbar my-toolbar p-3 mb-4 d-flex justify-content-between align-items-center flex-wrap">
+      <div class="toolbar-title d-flex align-items-center">
+      <h1><i class="bi bi-chat-dots-fill"></i> Infra Asset AI Asset Query Engine</h1>
+      <span class="nlp-badge">NATURAL LANGUAGE PROCESSING</span>
+    </div>
+    <button class="btn-clear" (click)="clearChat()">
+      <i class="bi bi-trash3"></i> Clear
+    </button>
+  </div>
+
+  <!-- Example Queries -->
+  <div class="example-queries" *ngIf="messages.length <= 1">
+    <p class="examples-label">Try asking:</p>
+    <div class="examples-grid">
+      <button *ngFor="let ex of exampleQueries" (click)="useExample(ex)" class="example-chip">
+        <i class="bi bi-chat-quote"></i> {{ ex }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="chat-messages" #chatContainer>
+    <div *ngFor="let msg of messages" [class]="'message message-' + msg.type">
+      <div class="message-avatar">
+        <i [class]="msg.type === 'user' ? 'bi bi-person-fill' : 'bi bi-cpu-fill'"></i>
+      </div>
+      <div class="message-content">
+        <div class="message-text">{{ msg.text }}</div>
+
+        <!-- Query Result Details -->
+        <div *ngIf="msg.queryResult" class="query-result">
+          <!-- Intent & Filters -->
+          <div class="result-meta">
+            <span class="intent-badge">
+              <i class="bi bi-bullseye"></i> Intent: {{ msg.queryResult.interpretedIntent }}
+            </span>
+            <span class="filter-tag" *ngFor="let key of objectKeys(msg.queryResult.filters)">
+              {{ key }}: {{ msg.queryResult.filters[key] }}
+            </span>
+          </div>
+
+          <!-- Matched Assets Table -->
+          <div class="result-table" *ngIf="msg.queryResult.matchedAssets.length > 0">
+            <div class="result-count">
+              <i class="bi bi-box-seam"></i>
+              {{ msg.queryResult.matchedAssets.length }} asset(s) found
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Asset Tag</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Condition</th>
+                  <th>Location</th>
+                  <th>Checkout To</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let asset of msg.queryResult.matchedAssets.slice(0, 20)">
+                  <td class="asset-tag">{{ asset.AssetTag }}</td>
+                  <td>{{ asset.Description }}</td>
+                  <td>{{ asset.GroupAssetCategory }}</td>
+                  <td>
+                    <span [class]="'condition-badge condition-' + (asset.AssetCondition || 'unknown').toLowerCase().replace(' ', '-')">
+                      {{ asset.AssetCondition }}
+                    </span>
+                  </td>
+                  <td>{{ asset.Location || '—' }}</td>
+                  <td>{{ asset.CheckoutTo || '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="more-results" *ngIf="msg.queryResult.matchedAssets.length > 20">
+              ... and {{ msg.queryResult.matchedAssets.length - 20 }} more
+            </div>
+          </div>
+
+          <!-- No Results -->
+          <div class="no-results" *ngIf="msg.queryResult.matchedAssets.length === 0">
+            <i class="bi bi-inbox"></i>
+            <span>No assets match this query.</span>
+          </div>
+
+          <!-- Suggestions -->
+          <div class="suggestions" *ngIf="msg.queryResult.suggestions.length > 0">
+            <span class="suggestions-label">Suggestions:</span>
+            <button *ngFor="let suggestion of msg.queryResult.suggestions"
+                    (click)="useExample(suggestion)" class="suggestion-chip">
+              {{ suggestion }}
+            </button>
+          </div>
+        </div>
+
+        <div class="message-time">{{ msg.timestamp | date:'shortTime' }}</div>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div *ngIf="isProcessing" class="message message-ai">
+      <div class="message-avatar">
+        <i class="bi bi-cpu-fill"></i>
+      </div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="chat-input">
+    <input type="text"
+           [(ngModel)]="userInput"
+           (keydown)="onKeydown($event)"
+           placeholder="Ask about your assets in plain English..."
+           [disabled]="isProcessing">
+    <button (click)="sendQuery()" [disabled]="!userInput.trim() || isProcessing" class="btn-send">
+      <i class="bi bi-send-fill"></i>
+    </button>
+  </div>
+</div>
