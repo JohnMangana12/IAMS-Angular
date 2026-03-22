@@ -38,17 +38,51 @@ export class AiChatComponent implements OnInit, OnDestroy {
 
 
   exampleQueries = [
-    'Show all servers',
-    'Show all assets',
-    'Show all desktops',
-    'Which assets have warranty expiring next 3 months?',
-    'Assets in good condition',
-    'show all laptops with expiring warranty',
-    'show all defective laptops',
-    'Find available assets',
-    'show all assets belong to Manila Infra Team',
-    'show all assets belong to Manila Infra Team with expiring warranty',
-    'show all assets belong to Manila Infra Team in good condition',
+    // Multi-criteria combined queries (not possible in any module UI)
+    //'Show all defective laptops with expiring warranty',
+    'Show all assets belong to Manila Infra Team in good condition',
+    'Show all good condition servers belong to Manila Infra Team',
+
+    // Condition-based filtering (no module has condition filters)
+    'Show all defective assets',
+    'Show all disposed assets',
+    //'Show all assets in fair condition',
+    'Show all assets for disposal',
+
+    // Team & assignment queries (no module supports this)
+    'Show all assets belong to Manila Infra Team',
+    //'Show unassigned assets',
+
+    // Time-based warranty intelligence (beyond warranty-monitoring)
+    'Which assets have warranty expiring in the next 3 months?',
+    'Show all assets with expired warranty for laptops',
+    'Show all assets with expired warranty for Rack Type Server',
+    'Show all assets with expired warranty for Tower Type Server',
+
+
+    // Age-based queries (not available in any module)
+    'Show assets older than 3 years',
+    'Show assets acquired this year',
+
+    // Server type queries (Rack vs Tower)
+    'Show all Rack Type Servers',
+    'Show all Tower Type Servers',
+    'Show all defective Rack Type Servers',
+    'Show all Tower Type Servers in good condition',
+
+    // Count & statistics (no module provides counts)
+    'How many defective laptops do we have?',
+    'How many Rack Type Servers do we have?',
+
+    // Location queries (no module has location filtering)
+    //'Show all assets in Manila',
+
+    // Cost center queries (only warranty-monitoring has this)
+    'Show assets under cost center 5336',
+
+    // Direct lookups (faster than scrolling through tables)
+    //'Find asset tag ASSET-001',
+    //'Find serial number SN12345',
   ];
 
 

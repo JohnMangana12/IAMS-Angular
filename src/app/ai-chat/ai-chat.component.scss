@@ -281,9 +281,12 @@
   font-weight: 600;
   &.condition-good { background: #d4edda; color: #155724; }
   &.condition-defective { background: #f8d7da; color: #721c24; }
-  &.condition-fair { background: #fff3cd; color: #856404; }
+  &.condition-borrowed { background: #fff3cd; color: #856404; }
+  &.condition-spare { background: #cce5ff; color: #004085; }
+  &.condition-disposed-assets { background: #FFA500; color: #ffffff; }
+  &.condition-missing { background: #f8d7da; color: #721c24; }
   &.condition-for-disposal { background: #f5c6cb; color: #721c24; }
-  &.condition-spare { background: #d6d8db; color: #383d41; }
+  &.condition-offsite { background: #e2e3f1; color: #383d8a; }
 }
 
 .more-results {

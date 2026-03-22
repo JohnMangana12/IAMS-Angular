@@ -108,7 +108,10 @@ export class AiEngineService {
     switch ((condition || '').toLowerCase()) {
       case 'defective': return 90;
       case 'for disposal': return 85;
-      case 'fair': return 50;
+      case 'disposed assets': return 80;
+      case 'missing': return 75;
+      case 'offsite': return 30;
+      case 'borrowed': return 20;
       case 'good': return 10;
       default: return 40;
     }
@@ -269,7 +272,7 @@ export class AiEngineService {
         optimalReplacementDate = new Date();
         optimalReplacementDate.setMonth(optimalReplacementDate.getMonth() + 1);
         savingsIfReplaced = Math.round(warrantyGapCost + monthlyDepreciation * 6);
-      } else if (estimatedRemainingLife <= 18 || (asset.AssetCondition || '').toLowerCase() === 'fair') {
+      } else if (estimatedRemainingLife <= 18 || (asset.AssetCondition || '').toLowerCase() === 'for disposal') {
         recommendation = 'monitor';
         justification = `Asset ${asset.AssetTag} is aging but still functional. Increased monitoring recommended. Plan budget for future replacement.`;
         optimalReplacementDate = new Date();
@@ -347,7 +350,7 @@ export class AiEngineService {
     let matchedAssets = [...assets];
 
     // Condition filters
-    const conditions = ['good', 'defective', 'fair', 'for disposal', 'disposed'];
+    const conditions = ['good', 'defective', 'borrowed', 'spare', 'disposed assets', 'missing', 'for disposal', 'offsite'];
     for (const condition of conditions) {
       if (lowerQuery.includes(condition)) {
         filters['AssetCondition'] = condition;
@@ -358,38 +361,130 @@ export class AiEngineService {
       }
     }
 
-    // Category filters
-    const categories: { [key: string]: string } = {
-      'laptop': 'Laptop',
-      'server': 'Server',
-      'desktop': 'Desktop',
-      'monitor': 'Monitor',
-      'printer': 'Printer',
-      'switch': 'Switch',
-      'router': 'Router'
-    };
-    for (const [keyword, category] of Object.entries(categories)) {
+    // Category filters — check multi-word types first to avoid partial matches
+    const categories: { keyword: string; label: string }[] = [
+      { keyword: 'rack type server', label: 'Rack Type Server' },
+      { keyword: 'tower type server', label: 'Tower Type Server' },
+      { keyword: 'laptop', label: 'Laptop' },
+      { keyword: 'server', label: 'Server' },
+      { keyword: 'desktop', label: 'Desktop' },
+      { keyword: 'monitor', label: 'Monitor' },
+      { keyword: 'printer', label: 'Printer' },
+      { keyword: 'switch', label: 'Switch' },
+      { keyword: 'router', label: 'Router' }
+    ];
+    for (const { keyword, label } of categories) {
       if (lowerQuery.includes(keyword)) {
-        filters['AssetCategory'] = category;
+        filters['AssetCategory'] = label;
         matchedAssets = matchedAssets.filter(a =>
           (a.AssetCategory || '').toLowerCase().includes(keyword) ||
           (a.GroupAssetCategory || '').toLowerCase().includes(keyword) ||
-          (a.Description || '').toLowerCase().includes(keyword)
+          (a.Description || '').toLowerCase().includes(keyword) ||
+          (a.SerialNumber || '').toLowerCase().includes(keyword)
         );
         break;
       }
     }
 
-    // Warranty expiring
-    if (lowerQuery.includes('warranty') && (lowerQuery.includes('expir') || lowerQuery.includes('ending'))) {
-      filters['Warranty'] = 'expiring soon';
-      const threeMonths = new Date();
-      threeMonths.setMonth(threeMonths.getMonth() + 3);
+    // Warranty expiring vs expired
+    if (lowerQuery.includes('warranty')) {
+      if (lowerQuery.includes('expired') || lowerQuery.includes('out of warranty')) {
+        filters['Warranty'] = 'expired';
+        matchedAssets = matchedAssets.filter(a => {
+          if (!a.Warranty) return true;
+          return new Date(a.Warranty) < new Date();
+        });
+      } else if (lowerQuery.includes('expir') || lowerQuery.includes('ending')) {
+        filters['Warranty'] = 'expiring soon';
+        const monthsMatch = lowerQuery.match(/(\d+)\s*months?/);
+        const months = monthsMatch ? parseInt(monthsMatch[1], 10) : 3;
+        const futureDate = new Date();
+        futureDate.setMonth(futureDate.getMonth() + months);
+        matchedAssets = matchedAssets.filter(a => {
+          if (!a.Warranty) return false;
+          const exp = new Date(a.Warranty);
+          return exp > new Date() && exp <= futureDate;
+        });
+      }
+    }
+
+    // Location filter
+    const locationMatch = query.match(/(?:in|at|located\s+(?:in|at))\s+([A-Z][\w\s]+?)(?:\s+(?:with|that|who|and)\b|$)/i);
+    if (locationMatch && !filters['CheckoutTo']) {
+      const loc = locationMatch[1].trim();
+      // Avoid matching condition phrases like "in good condition"
+      if (!['good condition', 'bad condition', 'good', 'disposed assets'].includes(loc.toLowerCase())) {
+        filters['Location'] = loc;
+        matchedAssets = matchedAssets.filter(a =>
+          (a.Location || '').toLowerCase().includes(loc.toLowerCase())
+        );
+      }
+    }
+
+    // Scrum Team filter
+    const scrumMatch = query.match(/(?:belong(?:s|ing)?\s+to|team|scrum\s+team)\s+([\w\s]+?)(?:\s+(?:with|in|that|who)\b|$)/i);
+    if (scrumMatch && !filters['CheckoutTo']) {
+      const team = scrumMatch[1].trim();
+      filters['ScrumTeam'] = team;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.ScrumTeam || '').toLowerCase().includes(team.toLowerCase()) ||
+        (a.CheckoutTo || '').toLowerCase().includes(team.toLowerCase())
+      );
+    }
+
+    // Cost Center filter
+    const costCenterMatch = lowerQuery.match(/cost\s*center\s+([\w-]+)/);
+    if (costCenterMatch) {
+      const cc = costCenterMatch[1].trim();
+      filters['CostCenter'] = cc;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.CostCenter || '').toLowerCase().includes(cc.toLowerCase())
+      );
+    }
+
+    // Age-based filter
+    const olderMatch = lowerQuery.match(/older\s+than\s+(\d+)\s*(year|month)s?/);
+    if (olderMatch) {
+      const amount = parseInt(olderMatch[1], 10);
+      const unit = olderMatch[2];
+      const cutoff = new Date();
+      if (unit === 'year') cutoff.setFullYear(cutoff.getFullYear() - amount);
+      else cutoff.setMonth(cutoff.getMonth() - amount);
+      filters['Age'] = `older than ${amount} ${unit}(s)`;
       matchedAssets = matchedAssets.filter(a => {
-        if (!a.Warranty) return false;
-        const exp = new Date(a.Warranty);
-        return exp > new Date() && exp <= threeMonths;
+        if (!a.DateAcquired) return false;
+        return new Date(a.DateAcquired) <= cutoff;
       });
+    }
+
+    // Acquired this year / recently
+    if (lowerQuery.includes('acquired this year') || lowerQuery.includes('new this year')) {
+      const yearStart = new Date(new Date().getFullYear(), 0, 1);
+      filters['DateAcquired'] = 'this year';
+      matchedAssets = matchedAssets.filter(a => {
+        if (!a.DateAcquired) return false;
+        return new Date(a.DateAcquired) >= yearStart;
+      });
+    }
+
+    // Asset Tag lookup
+    const assetTagMatch = query.match(/asset\s*tag\s+([\w-]+)/i);
+    if (assetTagMatch) {
+      const tag = assetTagMatch[1].trim();
+      filters['AssetTag'] = tag;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.AssetTag || '').toLowerCase().includes(tag.toLowerCase())
+      );
+    }
+
+    // Serial Number lookup
+    const serialMatch = query.match(/serial\s*(?:number|no\.?|#)?\s+([\w-]+)/i);
+    if (serialMatch) {
+      const sn = serialMatch[1].trim();
+      filters['SerialNumber'] = sn;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.SerialNumber || '').toLowerCase().includes(sn.toLowerCase())
+      );
     }
 
     // Checkout / assignment filters

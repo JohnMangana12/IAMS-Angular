@@ -18,6 +18,8 @@ export class AssetService {
     scrumTeam?: string | null,
     agileReleaseTrain?: string | null,
     assetCondition?: string,
+    SerialNumber?: string,
+    EmersonPartNumber?: string
   ): Observable<Asset[]> {
     let params = new HttpParams();
 

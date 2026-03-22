@@ -71,6 +71,8 @@
                 <tr>
                   <th>Asset Tag</th>
                   <th>Description</th>
+                  <th>Serial Number</th>
+                  <th>SE Code / Part Number</th>
                   <th>Category</th>
                   <th>Condition</th>
                   <th>Location</th>
@@ -81,9 +83,11 @@
                 <tr *ngFor="let asset of msg.queryResult.matchedAssets.slice(0, 20)">
                   <td class="asset-tag">{{ asset.AssetTag }}</td>
                   <td>{{ asset.Description }}</td>
+                  <td>{{ asset.SerialNumber }}</td>
+                  <td>{{ asset.EmersonPartNumber }}</td>
                   <td>{{ asset.GroupAssetCategory }}</td>
                   <td>
-                    <span [class]="'condition-badge condition-' + (asset.AssetCondition || 'unknown').toLowerCase().replace(' ', '-')">
+                    <span [class]="'condition-badge condition-' + (asset.AssetCondition || 'unknown').trim().toLowerCase().split(' ').join('-')">
                       {{ asset.AssetCondition }}
                     </span>
                   </td>
@@ -135,7 +139,7 @@
     <input type="text"
            [(ngModel)]="userInput"
            (keydown)="onKeydown($event)"
-           placeholder="Ask about your assets in plain English..."
+           placeholder="Ask about your IAMS assets..."
            [disabled]="isProcessing">
     <button (click)="sendQuery()" [disabled]="!userInput.trim() || isProcessing" class="btn-send">
       <i class="bi bi-send-fill"></i>

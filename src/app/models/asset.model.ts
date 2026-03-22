@@ -4,6 +4,8 @@ export interface Asset {
   Description: string;
   Location: string;
   SerialNumber: string;
+  EmersonPartNumber: string;
+  Commnents: string;
   AssetCondition: string;
   Specification: string;
   GroupAssetCategory: string;
