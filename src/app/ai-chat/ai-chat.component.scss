@@ -203,6 +203,38 @@
   margin-top: 6px;
 }
 
+// AI Powered Badges
+.ai-powered-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, #6f42c1, #00b4d8);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+
+  i { font-size: 12px; }
+}
+
+.ai-fallback-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 3px 10px;
+  background-color: #6c757d;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+
+  i { font-size: 12px; }
+}
+
 // Query Results
 .query-result {
   margin-top: 12px;

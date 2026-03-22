@@ -48,6 +48,14 @@
       <div class="message-content">
         <div class="message-text">{{ msg.text }}</div>
 
+        <!-- AI Powered Badge -->
+        <div *ngIf="msg.aiPowered" class="ai-powered-badge">
+          <i class="bi bi-stars"></i> Powered by OpenAI
+        </div>
+        <div *ngIf="msg.aiPowered === false && msg.queryResult" class="ai-fallback-badge">
+          <i class="bi bi-cpu"></i> Regex Engine (Offline Mode)
+        </div>
+
         <!-- Query Result Details -->
         <div *ngIf="msg.queryResult" class="query-result">
           <!-- Intent & Filters -->

@@ -10,6 +10,7 @@ interface ChatMessage {
   text: string;
   timestamp: Date;
   queryResult?: NLPQueryResult;
+  aiPowered?: boolean;
 }
 
 @Component({
@@ -120,7 +121,10 @@ export class AiChatComponent implements OnInit, OnDestroy {
         const count = result.matchedAssets.length;
         let responseText: string;
 
-        if (result.interpretedIntent === 'count') {
+        // Use AI-generated response if available, otherwise generate one
+        if (result.aiResponse) {
+          responseText = result.aiResponse;
+        } else if (result.interpretedIntent === 'count') {
           responseText = `Found ${count} asset(s) matching your query.`;
         } else if (count === 0) {
           responseText = 'No assets found matching your query. Try a different filter or check the suggestions below.';
@@ -132,7 +136,8 @@ export class AiChatComponent implements OnInit, OnDestroy {
           type: 'ai',
           text: responseText,
           timestamp: new Date(),
-          queryResult: result
+          queryResult: result,
+          aiPowered: result.aiPowered ?? false
         });
 
         this.isProcessing = false;

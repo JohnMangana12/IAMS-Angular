@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, catchError } from 'rxjs';
 import { AssetService } from './asset.service';
+import { OpenaiChatService } from './openai-chat.service';
 import {
   AiEngineService,
   RiskScore,
@@ -37,7 +38,8 @@ export class AiInsightsService {
 
   constructor(
     private assetService: AssetService,
-    private aiEngine: AiEngineService
+    private aiEngine: AiEngineService,
+    private openaiChat: OpenaiChatService
   ) {}
 
   getFullAiAnalysis(): Observable<AiDashboardData> {
@@ -89,9 +91,18 @@ export class AiInsightsService {
     );
   }
 
-  queryAssets(query: string): Observable<NLPQueryResult> {
-    return this.assetService.getAssetList().pipe(
-      map(assets => this.aiEngine.processNaturalLanguageQuery(query, assets))
+  queryAssets(query: string): Observable<NLPQueryResult & { aiResponse?: string; aiPowered?: boolean }> {
+    // Try OpenAI first, fall back to regex engine if unavailable
+    return this.openaiChat.queryAssets(query).pipe(
+      catchError(() => {
+        console.warn('OpenAI unavailable, falling back to regex engine');
+        return this.assetService.getAssetList().pipe(
+          map(assets => ({
+            ...this.aiEngine.processNaturalLanguageQuery(query, assets),
+            aiPowered: false
+          }))
+        );
+      })
     );
   }
 }

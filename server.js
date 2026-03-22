@@ -927,6 +927,248 @@ app.delete('/licenses/:id', async (req, res) => {
 
 
 
+// ==========================================
+// AI CHAT — OpenAI-Powered NLP Asset Query
+// ==========================================
+const OPENAI_API_KEY = (process.env.OPENAI_API_KEY || '').trim();
+
+app.post('/api/ai-chat', async (req, res) => {
+  const { query } = req.body;
+  if (!query || typeof query !== 'string' || query.trim().length === 0) {
+    return res.status(400).json({ error: 'Query is required' });
+  }
+
+  if (!OPENAI_API_KEY) {
+    return res.status(503).json({ error: 'OpenAI API key not configured' });
+  }
+
+  try {
+    // 1. Fetch all assets from the database
+    const assetResult = await pool.query(
+      'SELECT id, "AssetTag", "Description", "Location", "SerialNumber", "AssetCondition", "Specification", "GroupAssetCategory", "PoNumber", "Warranty", "DateAcquired", "CheckoutTo", "AssetCategory", "CostCenter", "ScrumTeam", "AgileReleaseTrain", "Comments", "EmersonPartNumber" FROM assets'
+    );
+    const assets = assetResult.rows;
+
+    // 2. Build a concise summary of available data for the AI
+    const conditions = [...new Set(assets.map(a => a.AssetCondition).filter(Boolean))];
+    const categories = [...new Set(assets.map(a => a.GroupAssetCategory).filter(Boolean))];
+    const locations = [...new Set(assets.map(a => a.Location).filter(Boolean))];
+    const teams = [...new Set(assets.map(a => a.ScrumTeam).filter(Boolean))];
+    const costCenters = [...new Set(assets.map(a => a.CostCenter).filter(Boolean))];
+
+    // 3. Call OpenAI to interpret the natural language query
+    const systemPrompt = `You are an IT Asset Management System (IAMS) AI assistant. Your job is to interpret natural language queries about IT assets and return structured JSON filters.
+
+Available asset fields and their known values:
+- AssetCondition: ${JSON.stringify(conditions)}
+- GroupAssetCategory: ${JSON.stringify(categories)}
+- Location: ${JSON.stringify(locations)}
+- ScrumTeam: ${JSON.stringify(teams)}
+- CostCenter: ${JSON.stringify(costCenters)}
+- Other fields: AssetTag, Description, SerialNumber, EmersonPartNumber, Warranty (date), DateAcquired (date), CheckoutTo (person name), AssetCategory, AgileReleaseTrain
+
+You MUST respond with ONLY valid JSON in this exact format (no markdown, no explanation):
+{
+  "intent": "search" or "count",
+  "filters": {
+    "AssetCondition": "value or null",
+    "GroupAssetCategory": "value or null",
+    "Location": "value or null",
+    "ScrumTeam": "value or null",
+    "CostCenter": "value or null",
+    "CheckoutTo": "value or null",
+    "AssetTag": "value or null",
+    "SerialNumber": "value or null",
+    "warrantyStatus": "expired" or "expiring" or null,
+    "warrantyMonths": number or null,
+    "olderThanMonths": number or null,
+    "acquiredThisYear": true or null,
+    "unassigned": true or null
+  },
+  "aiResponse": "A helpful natural language response describing what you found",
+  "suggestions": ["suggestion 1", "suggestion 2"]
+}
+
+Rules:
+- Match filter values to the closest known value from the lists above (case-insensitive fuzzy match)
+- For warranty questions: set warrantyStatus to "expired" or "expiring" and warrantyMonths for duration
+- For age questions: convert years to months for olderThanMonths
+- For "how many" / "count" questions: set intent to "count"
+- For unassigned/available assets: set unassigned to true
+- Only include filters that are explicitly mentioned in the query (leave others as null)
+- Provide 2-3 helpful follow-up suggestions
+- The aiResponse should be conversational and helpful`;
+
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: query.trim().substring(0, 500) }
+        ],
+        temperature: 0.1,
+        max_tokens: 500
+      })
+    });
+
+    if (!openaiResponse.ok) {
+      const errBody = await openaiResponse.text();
+      console.error('OpenAI API error:', openaiResponse.status, errBody);
+      return res.status(502).json({ error: 'AI service temporarily unavailable' });
+    }
+
+    const openaiData = await openaiResponse.json();
+    const aiContent = openaiData.choices?.[0]?.message?.content;
+
+    if (!aiContent) {
+      return res.status(502).json({ error: 'Empty AI response' });
+    }
+
+    // 4. Parse the AI's structured response
+    let parsed;
+    try {
+      parsed = JSON.parse(aiContent);
+    } catch (parseErr) {
+      console.error('Failed to parse AI response:', aiContent);
+      return res.status(502).json({ error: 'Invalid AI response format' });
+    }
+
+    // 5. Apply filters to assets
+    let matchedAssets = [...assets];
+    const appliedFilters = {};
+
+    if (parsed.filters.AssetCondition) {
+      const val = parsed.filters.AssetCondition.toLowerCase();
+      appliedFilters['AssetCondition'] = parsed.filters.AssetCondition;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.AssetCondition || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.GroupAssetCategory) {
+      const val = parsed.filters.GroupAssetCategory.toLowerCase();
+      appliedFilters['GroupAssetCategory'] = parsed.filters.GroupAssetCategory;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.GroupAssetCategory || '').toLowerCase().includes(val) ||
+        (a.AssetCategory || '').toLowerCase().includes(val) ||
+        (a.Description || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.Location) {
+      const val = parsed.filters.Location.toLowerCase();
+      appliedFilters['Location'] = parsed.filters.Location;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.Location || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.ScrumTeam) {
+      const val = parsed.filters.ScrumTeam.toLowerCase();
+      appliedFilters['ScrumTeam'] = parsed.filters.ScrumTeam;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.ScrumTeam || '').toLowerCase().includes(val) ||
+        (a.CheckoutTo || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.CostCenter) {
+      const val = parsed.filters.CostCenter.toLowerCase();
+      appliedFilters['CostCenter'] = parsed.filters.CostCenter;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.CostCenter || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.CheckoutTo) {
+      const val = parsed.filters.CheckoutTo.toLowerCase();
+      appliedFilters['CheckoutTo'] = parsed.filters.CheckoutTo;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.CheckoutTo || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.AssetTag) {
+      const val = parsed.filters.AssetTag.toLowerCase();
+      appliedFilters['AssetTag'] = parsed.filters.AssetTag;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.AssetTag || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.SerialNumber) {
+      const val = parsed.filters.SerialNumber.toLowerCase();
+      appliedFilters['SerialNumber'] = parsed.filters.SerialNumber;
+      matchedAssets = matchedAssets.filter(a =>
+        (a.SerialNumber || '').toLowerCase().includes(val)
+      );
+    }
+
+    if (parsed.filters.warrantyStatus === 'expired') {
+      appliedFilters['Warranty'] = 'expired';
+      matchedAssets = matchedAssets.filter(a => {
+        if (!a.Warranty) return true;
+        return new Date(a.Warranty) < new Date();
+      });
+    } else if (parsed.filters.warrantyStatus === 'expiring') {
+      const months = parsed.filters.warrantyMonths || 3;
+      appliedFilters['Warranty'] = `expiring within ${months} months`;
+      const futureDate = new Date();
+      futureDate.setMonth(futureDate.getMonth() + months);
+      matchedAssets = matchedAssets.filter(a => {
+        if (!a.Warranty) return false;
+        const exp = new Date(a.Warranty);
+        return exp > new Date() && exp <= futureDate;
+      });
+    }
+
+    if (parsed.filters.olderThanMonths) {
+      const cutoff = new Date();
+      cutoff.setMonth(cutoff.getMonth() - parsed.filters.olderThanMonths);
+      appliedFilters['Age'] = `older than ${parsed.filters.olderThanMonths} months`;
+      matchedAssets = matchedAssets.filter(a => {
+        if (!a.DateAcquired) return false;
+        return new Date(a.DateAcquired) <= cutoff;
+      });
+    }
+
+    if (parsed.filters.acquiredThisYear) {
+      const yearStart = new Date(new Date().getFullYear(), 0, 1);
+      appliedFilters['DateAcquired'] = 'this year';
+      matchedAssets = matchedAssets.filter(a => {
+        if (!a.DateAcquired) return false;
+        return new Date(a.DateAcquired) >= yearStart;
+      });
+    }
+
+    if (parsed.filters.unassigned) {
+      appliedFilters['CheckoutTo'] = 'Available';
+      matchedAssets = matchedAssets.filter(a =>
+        !a.CheckoutTo || a.CheckoutTo.trim() === ''
+      );
+    }
+
+    // 6. Return structured response
+    res.json({
+      interpretedIntent: parsed.intent || 'search',
+      filters: appliedFilters,
+      matchedAssets: matchedAssets,
+      suggestions: parsed.suggestions || [],
+      aiResponse: parsed.aiResponse || '',
+      aiPowered: true
+    });
+
+  } catch (error) {
+    console.error('AI Chat error:', error);
+    res.status(500).json({ error: 'Internal server error processing AI query' });
+  }
+});
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Node API running internally on port ${port}`);
 });
